@@ -95,10 +95,13 @@ api.setup()
 def home():
     productos = Producto.select()
     usuarios = Usuario.select()
-    return render_template("index.html", productos=productos, usuarios=usuarios)
+    exito = None
+    return render_template("index.html", productos=productos, usuarios=usuarios, exito=exito)
 
 @app.route("/mandar", methods=["POST", "GET"])
 def consumo():
+    productos = Producto.select()
+    usuarios = Usuario.select()
     if (request.form["productos"] != "null"):
         cantidad_actual = Producto.get(Producto.id == request.form["productos"]).cant
         print cantidad_actual
@@ -111,9 +114,11 @@ def consumo():
         consumo.save()
         actualizar_cantidad = Producto.update(cant=cantidad_nueva).where(Producto.id == request.form["productos"])
         actualizar_cantidad.execute()
-        return "Orden hecha!"
+        exito = True
+        return render_template("index.html", productos=productos, usuarios=usuarios, exito=exito)        
     else:
-        return "Chau"
+        error = False
+        return render_template("index.html", productos=productos, usuarios=usuarios, exito=exito)        
 
 #Principal
 if __name__ == '__main__':
