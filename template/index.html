@@ -23,21 +23,28 @@
             <div id="inventory" class="seven columns">
                 <h2>Seleccionar</h2>
 
-                <form>
+                <form method="POST" action="{{ url_for('consumo') }}">
                 <ul class="inv-menu">
-                    <li><select onchange="admSelectCheck(this)">
-                        <option value="0" default>-------</option>
-                        <option value="1">Levite</option>
-                        <option value="2">Coca-Cola</option>
-                        <option value="3">Sprite</option>
-                        <option value="4" disabled>Paso de los toros</option>
-                    </select> <select id="quantity" style="display:none;">
-                    </select>
+                    <li>
+                        <select id="productos" name="productos" onchange="admSelectCheck(this)">
+                            <option value="null" selected="selected">--------</option>
+                        {% for producto in productos %}
+                            <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                        {% endfor %}
+                        </select>
+                        <select id="quantity" name="cantidad">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </li>
-                    <li>Para: <select id="person" onchange="enable(this)">
+                    <li>Para: <select id="personas" name="personas" onchange="enable(this)">
                         <option value="0">------------</option>
-                        <option value="1">John Doe</option>
-                        <option value="2">Jimmy Test</option>
+                        {% for usuario in usuarios %}
+                            <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
+                        {% endfor %}
                     </select></li>
                     <li><input id="enviar" type="submit" value="Enviar" disabled></li>
                 </ul>
