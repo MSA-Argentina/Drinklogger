@@ -26,7 +26,34 @@ select, option {
 
 #container {
     width: 960px;
+    height: 420px;
     padding: 20px;
+}
+
+.exito {
+    height: 75px;
+    background: #61FF62;
+    border: 1px solid #329523;
+    font-size: 22px;
+    padding-top: 20px;
+    padding-bottom: -50px;
+    color: #1E5920;
+    text-align: center;
+}
+
+.error {
+    height: 75px;
+    background: #DF2430;
+    border: 1px solid #A9170E;
+    font-size: 22px;
+    padding-top: 20px;
+    padding-bottom: -50px;
+    color: #4B2524;   
+    text-align: center;
+}
+
+.lista li {
+    padding-bottom: 10px;
 }
 
 .err {
@@ -163,6 +190,10 @@ input::-moz-focus-inner {
     padding: 0;
 }
 
-#inventory, #quantity {
+.inventory {
+    display: none;
+}
+
+#quantity {
     display: none;
 }
