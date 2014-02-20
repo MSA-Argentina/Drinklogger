@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title></title>
+    <title>Drinklogger</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 <meta charset="utf-8">
@@ -14,7 +14,7 @@
                 <div class="exito">Hecho. Ya podés disfrutar tu bebida.</div>
             {% endif %}
             {% if exito == False %}
-                <div class="error">Error. Intente de nuevo.</div>
+                <div class="error">Error. Puede que no haya suficientes bebidas o que algo ande mal. Intente de nuevo.</div>
             {% endif %}
         {% endif %}
 
@@ -24,12 +24,17 @@
             <div class="seven columns products">
                 <ul class="menu">
                     <li><a href="javascript:mostrar();">Pedir</a></li>
+                    <li><a href="/admin/">Administración</a></li>
                 </ul>
             </div>
             <div id="main" class="seven columns">
                 <ul class="lista">
                 {% for producto in productos %}
-                    <li>{{ producto.nombre }} x{{ producto.cant }}</li>
+                    {% if producto.cant == 0 %}
+                        <li>{{ producto.nombre }} <span class="err">No hay más</span></li>
+                    {% else %}
+                        <li>{{ producto.nombre }} <b>x{{ producto.cant }}</b></li>
+                    {% endif %}
                 {% endfor %}
                 </ul>
             </div>
@@ -42,7 +47,9 @@
                         <select id="productos" name="productos" onchange="admSelectCheck(this)">
                             <option value="null" selected="selected">--------</option>
                         {% for producto in productos %}
-                            <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                            {% if producto.cant > 0 %}
+                                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                            {% endif %}
                         {% endfor %}
                         </select>
                         <select id="quantity" name="cantidad">
