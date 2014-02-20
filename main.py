@@ -103,7 +103,7 @@ def consumo():
     if (request.form["productos"] != "null"):
         cantidad_actual = Producto\
             .get(Producto.id == request.form["productos"]).cant
-        if (request.form["cantidad"] <= cantidad_actual):
+        if (request.form["cantidad"] > cantidad_actual):
             cantidad_nueva = cantidad_actual - int(request.form["cantidad"])
             consumo = Consumo()
             consumo.usuario = request.form["personas"]
