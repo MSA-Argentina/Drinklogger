@@ -1,0 +1,15 @@
+Flask
+Flask-WTF
+Jinja2
+Ojota
+WTForms
+Werkzeug
+flask-peewee
+itsdangerous
+peewee
+psycopg2
+pygobject
+six
+wsgiref
+wtf-peewee
+zaguan
