@@ -8,7 +8,6 @@ from peewee import *
 from flask_peewee.db import Database
 from flask_peewee.admin import Admin
 from flask_peewee.admin import ModelAdmin
-from flask_peewee.rest import RestAPI
 from flask_peewee.rest import RestResource
 from flask_peewee.auth import Auth
 
@@ -29,7 +28,6 @@ app.config.from_object(__name__)
 
 db = Database(app)
 auth = Auth(app, db)
-api = RestAPI(app)
 
 # Modelos
 
@@ -85,16 +83,6 @@ admin.register(Usuario)
 admin.register(Consumo, ConsumoAdmin)
 
 admin.setup()
-
-# REST API
-
-
-class ProductoConf(RestResource):
-    exclude = ('id', 'desc',)
-
-
-api.register(Producto, ProductoConf)
-api.setup()
 
 # Vistas
 
