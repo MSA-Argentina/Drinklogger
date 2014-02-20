@@ -1,7 +1,6 @@
 Producto
 --Id
 --Nombre
---Tipo
 --Desc
 --Cantidad
 Usuario
@@ -11,9 +10,6 @@ Usuario
 Consumo
 --Id
 --Id_Usuario
---Consumo_x_producto
---Fecha
-Consumo_x_producto
---Id
 --Producto
 --Cantidad
+--Fecha
