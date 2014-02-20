@@ -1,7 +1,6 @@
 Flask
 Jinja2
 Ojota
-WTForms
 Werkzeug
 flask-peewee
 itsdangerous
