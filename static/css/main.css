@@ -52,7 +52,7 @@ select, option {
     text-align: center;
 }
 
-.lista li {
+.menu li, .lista li, .inv-menu li {
     padding-bottom: 10px;
 }
 
@@ -63,10 +63,6 @@ select, option {
 
 .menu, .inv-menu {
     list-style: none;
-}
-
-.menu li, .inv-menu li {
-    padding-bottom: 5px;
 }
 
 .menu a {
