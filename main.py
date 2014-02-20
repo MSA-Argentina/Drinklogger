@@ -73,11 +73,13 @@ class Consumo(db.Model):
 class ProductoAdmin(ModelAdmin):
     columns = ('nombre', 'cant',)
 
+class ConsumoAdmin(ModelAdmin):
+    columns = ("usuario", "producto", "cantidad", "fecha")
 
 admin = Admin(app, auth)
 admin.register(Producto, ProductoAdmin)
 admin.register(Usuario)
-admin.register(Consumo)
+admin.register(Consumo, ConsumoAdmin)
 
 admin.setup()
 
@@ -85,7 +87,7 @@ admin.setup()
 class ProductoConf(RestResource):
     exclude = ('id', 'desc',)
 
-api.register(Producto)
+api.register(Producto, ProductoConf)
 api.setup()
 
 #Vistas
