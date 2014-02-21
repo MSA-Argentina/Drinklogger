@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 <meta charset="utf-8">
+<script src="{{ url_for('static', filename='js/scw.js') }}"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 <body>
@@ -82,8 +83,9 @@
                     {% endfor %}
                 </ul>
 
-                <form>
-
+                <form method="POST" action="/consulta/">
+                    <p>Fecha: <input id="date" name="fecha" type="text" onclick="scwShow(this,event);" /></p>
+                    <p><input type="submit" value="Consultar"></p>
                 </form>
             </div>
     </div>
