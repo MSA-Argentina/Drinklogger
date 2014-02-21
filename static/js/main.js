@@ -1,6 +1,13 @@
-function mostrar () {
+function mostrarPedidos () {
     main.style.display = "none";
     inventory.style.display = "inline-block";
+    consulta.style.display = "none";
+}
+
+function mostrarConsultas () {
+    main.style.display = "none";
+    consulta.style.display = "inline-block";
+    inventory.style.display = "none";
 }
 
 var firstCheck = false; // Work in Progress

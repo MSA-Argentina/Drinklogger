@@ -23,7 +23,8 @@
         </div>
             <div class="seven columns products">
                 <ul class="menu">
-                    <li><a href="javascript:mostrar();">Pedir</a></li>
+                    <li><a href="javascript:mostrarPedidos();">Pedir</a></li>
+                    <li><a href="javascript:mostrarConsultas();">Consultas</a></li>
                     <li><a href="/admin/">Administración</a></li>
                 </ul>
             </div>
@@ -68,6 +69,21 @@
                     </select></li>
                     <li><input id="enviar" type="submit" value="Enviar" disabled></li>
                 </ul>
+                </form>
+            </div>
+            <div id="consulta" style="display:none;" class="seven columns">
+                <h2>Consultas</h2>
+
+                <h2>Últimos movimientos</h2>
+
+                <ul>
+                    {% for item in consumo %}
+                        <li><b>{{ item.usuario }}</b> consumió <b>{{ item.cantidad }} {{ item.producto }}</b> el día <b>{{ item.fecha }}</b> por un total de <b>{{ item.precio * item.cantidad }}</b></li>
+                    {% endfor %}
+                </ul>
+
+                <form>
+
                 </form>
             </div>
     </div>
