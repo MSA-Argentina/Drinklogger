@@ -186,10 +186,6 @@ input::-moz-focus-inner {
     padding: 0;
 }
 
-.inventory {
-    display: none;
-}
-
-#quantity {
+.inventory, #cantidad, #persona {
     display: none;
 }

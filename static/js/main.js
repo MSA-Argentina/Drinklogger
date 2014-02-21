@@ -10,7 +10,8 @@ function admSelectCheck(nameSelect)
     if(nameSelect){
         admOptionValue = nameSelect.value;
         if(admOptionValue != "null"){
-            quantity.style.display = "inline-block";
+            cantidad.style.display = "inline-block";
+            persona.style.display = "inline-block";
             };
         }
         else {
