@@ -47,7 +47,6 @@ class Producto(db.Model):
 class Usuario(db.Model):
     nombre = CharField()
     email = CharField()
-    is_admin = BooleanField(default=False, null=True)
 
     class Meta:
         order_by = ('nombre',)
@@ -63,7 +62,7 @@ class Consumo(db.Model):
     fecha = DateTimeField(default=datetime.datetime.now)
 
     class Meta:
-        order_by = ('id',)
+        order_by = ('-fecha',)
 
     def __unicode__(self):
         return '%s: %s (%s)' % (self.usuario, self.producto, self.fecha)
@@ -71,13 +70,14 @@ class Consumo(db.Model):
 
 # Admin
 class ProductoAdmin(ModelAdmin):
-    columns = ('nombre', 'cant',)
+    columns = ("nombre", "cant",)
 
 
 class ConsumoAdmin(ModelAdmin):
-    columns = ("usuario", "producto", "cantidad", "fecha")
+    columns = ("producto", "usuario", "fecha", "cantidad",)
+    filter_fields = ("fecha",)
 
-admin = Admin(app, auth)
+admin = Admin(app, auth, branding="Drinklogger")
 admin.register(Producto, ProductoAdmin)
 admin.register(Usuario)
 admin.register(Consumo, ConsumoAdmin)
