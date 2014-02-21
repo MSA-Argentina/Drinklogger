@@ -61,7 +61,7 @@ class Consumo(db.Model):
     producto = ForeignKeyField(Producto)
     precio = FloatField()
     cantidad = IntegerField()
-    fecha = DateTimeField(default=datetime.datetime.now)
+    fecha = DateField(default=datetime.datetime.now().date())
 
     class Meta:
         order_by = ('-fecha',)
@@ -140,7 +140,7 @@ def consulta():
         fecha = str(datetime.datetime\
                 .strptime(request.form["fecha"], "%Y-%m-%d").date())
         consumo_semanal = Consumo.select()\
-            .where(Consumo.fecha == fecha)
+            .where(Consumo.fecha == request.form["fecha"])
         return render_template("consultas.html", consumo=consumo_semanal)
 
 # Principal
