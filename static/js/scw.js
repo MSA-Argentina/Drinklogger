@@ -356,7 +356,7 @@
 
     // Output date format
 
-    var scwDateOutputFormat  = 'dd-mm-yy'; // e.g. 'MMM-DD-YYYY' for the US
+    var scwDateOutputFormat  = 'yyyy-mm-dd'; // e.g. 'MMM-DD-YYYY' for the US
 
     // Note: The delimiters used should be in scwArrDelimiters.
 
