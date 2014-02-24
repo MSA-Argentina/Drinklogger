@@ -143,7 +143,4 @@ def consulta():
 
 # Principal
 if __name__ == '__main__':
-    # Usuario.create_table(fail_silently=True)
-    # Producto.create_table(fail_silently=True)
-    # Consumo.create_table(fail_silently=True)
     app.run()
