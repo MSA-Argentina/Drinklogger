@@ -1,6 +1,7 @@
 # Imports
 import os
 import datetime
+import re
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -134,18 +135,15 @@ def consumo():
 @app.route("/consulta/", methods=["POST"])
 def consulta():
     if (request.form["fecha"] != ""):
-        import datetime
-        ahora = str(datetime.datetime\
-                .strftime(datetime.datetime.now(), "%Y-%m-%d"))
-        fecha = str(datetime.datetime\
-                .strptime(request.form["fecha"], "%Y-%m-%d").date())
-        consumo_semanal = Consumo.select()\
-            .where(Consumo.fecha == request.form["fecha"])
-        return render_template("consultas.html", consumo=consumo_semanal)
+        from datetime import date
+        anio, mes, dia = request.form["fecha"].split("-")
+        fecha = date(int(anio), int(mes), int(dia))
+        consumo_semanal = Consumo.select().where(Consumo.fecha >= fecha)
+        return render_template("consultas.html", consumos=consumo_semanal)
 
 # Principal
 if __name__ == '__main__':
-    Usuario.create_table(fail_silently=True)
-    Producto.create_table(fail_silently=True)
-    Consumo.create_table(fail_silently=True)
+    # Usuario.create_table(fail_silently=True)
+    # Producto.create_table(fail_silently=True)
+    # Consumo.create_table(fail_silently=True)
     app.run()

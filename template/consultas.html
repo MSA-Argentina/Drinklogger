@@ -11,7 +11,15 @@
     <div id="container" class="container">
 
         <div class="sixteen columns">
-            {{ consumo.producto }}
+            <h2>Historial de consumos</h2>
+
+            <ul>
+            {% for consumo in consumos %}
+                <li><b>{{ consumo.usuario }}</b> consumió <b>{{ consumo.producto }} x{{ consumo.cantidad }}</b> el día <b>{{ consumo.fecha }}</b> por un valor de <b>${{ consumo.precio * consumo.cantidad }}</b></li>
+            {% endfor %}
+            </ul>
+
+            <a class="button" href="javascript:history.go(-1);">Volver atrás</a>
         </div>
 
     </div>
