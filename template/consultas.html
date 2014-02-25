@@ -12,11 +12,15 @@
 
         <div class="sixteen columns">
             <h2>Historial de consumos</h2>
-            <h4>Del {{ pasado }} a {{ futuro }}</h4>
+            {% if hoy != "" %}
+                <h4>De {{ pasado }} a {{ hoy }}</h4>
+            {% else %}
+                <h4>De {{ pasado }} a {{ futuro }}</h4>
+            {% endif %}
 
             <ul>
                 {% for usuario, total in consumos.items() %}
-                    <li><b>{{ usuario }}</b> Total: <b>${{ total }}</b> <a class="button" href="/consulta/{{ usuario }}/{{ fecha }}/">Detalle</a></i></li>
+                    <li><b>{{ usuario }}</b> Total: <b>${{ total }}</b> <a class="button" href="/consulta/{{ usuario }}/{{ pasado }}-a-{{ futuro }}/">Detalle</a></i></li>
                 {% endfor %}
             </ul>
 

@@ -9,6 +9,7 @@ from flask import render_template
 from flask import request
 
 
+# Esto crea las vistas del admin tipo django
 admin.setup()
 
 
@@ -78,36 +79,40 @@ def consulta():
         else:
             anio, mes, dia = request.form["futuro"].split("-")
             futuro = date(int(anio), int(mes), int(dia))
-        arreglo_consumo = {}
-        consumo_semanal = Consumo.select(Consumo.precio,
-                                         Consumo.cantidad,
-                                         Consumo.usuario,)\
-            .where((Consumo.fecha >= pasado) & (Consumo.fecha <= futuro))
-        # Mejorar este código
-        for detalle in consumo_semanal:
-            if str(detalle.usuario.nombre) not in arreglo_consumo:
-                arreglo_consumo[str(detalle.usuario.nombre)] \
-                    = detalle.precio * detalle.cantidad
+        if (pasado <= futuro):
+            arreglo_consumo = {}
+            consumo_semanal = Consumo.select(Consumo.precio,
+                                             Consumo.cantidad,
+                                             Consumo.usuario,)\
+                .where((Consumo.fecha >= pasado) & (Consumo.fecha <= futuro))
+            # Mejorar este codigo
+            for detalle in consumo_semanal:
+                if str(detalle.usuario.nombre) not in arreglo_consumo:
+                    arreglo_consumo[str(detalle.usuario.nombre)] \
+                        = detalle.precio * detalle.cantidad
+                else:
+                    arreglo_consumo[str(detalle.usuario.nombre)] \
+                        += detalle.precio * detalle.cantidad
+            if (futuro == datetime.datetime.now().date()):
+                return render_template("consultas.html",
+                                       consumos=arreglo_consumo,
+                                       pasado=str(pasado),
+                                       futuro=str(futuro),
+                                       hoy="hoy",)
             else:
-                arreglo_consumo[str(detalle.usuario.nombre)] \
-                    += detalle.precio * detalle.cantidad
-        if (futuro == datetime.datetime.now().date()):
-            return render_template("consultas.html",
-                                   consumos=arreglo_consumo,
-                                   pasado=str(pasado),
-                                   futuro="hoy",)
+                return render_template("consultas.html",
+                                       consumos=arreglo_consumo,
+                                       pasado=str(pasado),
+                                       futuro=str(futuro),)
         else:
-            return render_template("consultas.html",
-                                   consumos=arreglo_consumo,
-                                   pasado=str(pasado),
-                                   futuro=str(futuro),)
+            abort(406)
     else:
         abort(406)
 
 
-@app.route("/consulta/<usuario>/<fecha>/", methods=["GET"])
-def consulta_detalle(usuario, fecha):
-    if (usuario != '' and fecha != ''):
+@app.route("/consulta/<usuario>/<pasado>-a-<futuro>/", methods=["GET"])
+def consulta_detalle(usuario, pasado, futuro):
+    if (usuario != '' and pasado != '' and futuro != ''):
         usuario_id = Usuario.get(Usuario.nombre == usuario).id
         usuario_detalle = Consumo.select(Consumo.producto,
                                          fn.Sum(Consumo.cantidad)
@@ -115,7 +120,8 @@ def consulta_detalle(usuario, fecha):
                                          Consumo.precio,
                                          Consumo.fecha)\
                                  .where((Consumo.usuario == usuario_id)
-                                        & (Consumo.fecha >= fecha))\
+                                        & (Consumo.fecha >= pasado)
+                                        & (Consumo.fecha <= futuro))\
                                  .group_by(Consumo.producto,
                                            Consumo.cantidad,
                                            Consumo.precio,
