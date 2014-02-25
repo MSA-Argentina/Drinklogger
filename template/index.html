@@ -33,7 +33,7 @@
                 <ul class="lista">
                 {% for producto in productos %}
                     {% if producto.cant == 0 %}
-                        <li>{{ producto.nombre }} <span class="err">No hay más</span></li>
+                        <li>{{ producto.nombre }} <span class="err">No hay</span></li>
                     {% else %}
                         <li>{{ producto.nombre }} <b>x{{ producto.cant }}</b></li>
                     {% endif %}
