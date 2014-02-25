@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <title>Drinklogger</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+<meta charset="utf-8">
+
+</head>
+<body>
+    <div id="container" class="container">
+
+        <div class="sixteen columns">
+
+            <h2>Error {{ error }}</h2>
+
+            {% if error == 404 %}
+                <p>Página no encontrada.</p>
+            {% elif error == 406 %}
+                <p>Error en la carga o entrada de datos.</p>
+            {% else %}
+                <p>Error desconocido, intente luego.</p>
+            {% endif %}
+
+            <a class="button" href="javascript:history.go(-1);">Volver atrás</a>
+        </div>
+
+    </div>
+</body>
+</html>

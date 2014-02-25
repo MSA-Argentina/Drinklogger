@@ -2,6 +2,7 @@
 import os
 import datetime
 import re
+from flask import abort
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -88,6 +89,16 @@ admin.setup()
 # Vistas
 
 
+@app.errorhandler(404)
+def pagNoEncontrada(error):
+    return render_template("error.html", error=error.code)
+
+
+@app.errorhandler(406)
+def pagErrorValores(error):
+    return render_template("error.html", error=error.code)
+
+
 @app.route("/")
 def home():
     productos = Producto.select()
@@ -151,6 +162,8 @@ def consulta():
         return render_template("consultas.html",
                                consumos=arreglo_consumo,
                                fecha=str(fecha))
+    else:
+        abort(406)
 
 
 @app.route("/consulta/<usuario>/<fecha>/", methods=["GET"])
@@ -174,11 +187,10 @@ def consulta_detalle(usuario, fecha):
         return render_template("detalle.html",
                                usuario=usuario,
                                detalles=usuario_detalle,)
+    else:
+        abort(406)
 
 
 # Principal
 if __name__ == '__main__':
-    Usuario.create_table(fail_silently=True)
-    Producto.create_table(fail_silently=True)
-    Consumo.create_table(fail_silently=True)
     app.run()
