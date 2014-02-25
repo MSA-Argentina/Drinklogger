@@ -67,9 +67,6 @@ class Consumo(db.Model):
     class Meta:
         order_by = ('-fecha',)
 
-    def __unicode__(self):
-        return '%s: %s (%s)' % (self.usuario, self.producto, self.fecha)
-
 
 # Admin
 class ProductoAdmin(ModelAdmin):
@@ -77,8 +74,9 @@ class ProductoAdmin(ModelAdmin):
 
 
 class ConsumoAdmin(ModelAdmin):
-    columns = ("producto", "usuario", "fecha", "cantidad",)
+    columns = ("producto", "usuario", "fecha", "cantidad", "precio",)
     filter_fields = ("fecha",)
+
 
 admin = Admin(app, auth, branding="Drinklogger")
 admin.register(Producto, ProductoAdmin)
@@ -94,7 +92,6 @@ admin.setup()
 def home():
     productos = Producto.select()
     usuarios = Usuario.select()
-    consumo = Consumo.select().limit(5)
     exito = None
     return render_template("index.html", productos=productos,
                            usuarios=usuarios, exito=exito,)
@@ -138,9 +135,44 @@ def consulta():
         from datetime import date
         anio, mes, dia = request.form["fecha"].split("-")
         fecha = date(int(anio), int(mes), int(dia))
-        consumo_semanal = Consumo.select().where(Consumo.fecha >= fecha)
-        return render_template("consultas.html", consumos=consumo_semanal)
+        arreglo_consumo = {}
+        consumo_semanal = Consumo.select(Consumo.precio,
+                                         Consumo.cantidad,
+                                         Consumo.usuario,)\
+                                         .where(Consumo.fecha >= fecha)
+        for detalle in consumo_semanal:
+            if str(detalle.usuario.nombre) not in arreglo_consumo:
+                arreglo_consumo[str(detalle.usuario.nombre)] = detalle.precio * detalle.cantidad
+            else:
+                arreglo_consumo[str(detalle.usuario.nombre)] += detalle.precio * detalle.cantidad
+        return render_template("consultas.html",
+                               consumos=arreglo_consumo,
+                               fecha=str(fecha))
+
+@app.route("/consulta/<usuario>/<fecha>/", methods=["GET"])
+def consulta_detalle(usuario, fecha):
+    if (usuario != '' and fecha != ''):
+        anio, mes, dia = fecha.split("-")
+        usuario_id = Usuario.get(Usuario.nombre == usuario).id
+        total = 0
+        usuario_detalle = Consumo.select(Consumo.producto,
+                                         fn.Sum(Consumo.cantidad).alias("cantidad"),
+                                         Consumo.precio,
+                                         Consumo.fecha)\
+                                 .where((Consumo.usuario == usuario_id) & (Consumo.fecha >= fecha))\
+                                 .group_by(Consumo.producto,
+                                           Consumo.cantidad,
+                                           Consumo.precio,
+                                           Consumo.fecha)\
+                                 .order_by(Consumo.fecha.asc())
+        return render_template("detalle.html",
+                               usuario=usuario,
+                               detalles=usuario_detalle,)
+
 
 # Principal
 if __name__ == '__main__':
+    Usuario.create_table(fail_silently=True)
+    Producto.create_table(fail_silently=True)
+    Consumo.create_table(fail_silently=True)
     app.run()

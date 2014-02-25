@@ -11,12 +11,12 @@
     <div id="container" class="container">
 
         <div class="sixteen columns">
-            <h2>Historial de consumos</h2>
-            <h4>Del {{ fecha }} a hoy</h4>
+
+            <h2>Detalle de {{ usuario }}</h2>
 
             <ul>
-                {% for usuario, total in consumos.items() %}
-                    <li><b>{{ usuario }}</b> Total: <b>${{ total }}</b> <a class="button" href="/consulta/{{ usuario }}/{{ fecha }}/">Detalle</a></i></li>
+                {% for detalle in detalles %}
+                    <li><b>{{ detalle.fecha }}</b> - {{ detalle.producto }} x{{ detalle.cantidad }} (${{ detalle.precio }})</li>
                 {% endfor %}
             </ul>
 
