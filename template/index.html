@@ -51,6 +51,8 @@
                         {% for producto in productos %}
                             {% if producto.cant > 0 %}
                                 <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                            {% else %}
+                                <option value="{{ producto.id }}" disabled>{{ producto.nombre }}</option>
                             {% endif %}
                         {% endfor %}
                         </select>

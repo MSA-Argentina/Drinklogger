@@ -83,6 +83,7 @@ def consulta():
                                          Consumo.cantidad,
                                          Consumo.usuario,)\
             .where((Consumo.fecha >= pasado) & (Consumo.fecha <= futuro))
+        # Mejorar este código
         for detalle in consumo_semanal:
             if str(detalle.usuario.nombre) not in arreglo_consumo:
                 arreglo_consumo[str(detalle.usuario.nombre)] \
@@ -107,9 +108,7 @@ def consulta():
 @app.route("/consulta/<usuario>/<fecha>/", methods=["GET"])
 def consulta_detalle(usuario, fecha):
     if (usuario != '' and fecha != ''):
-        anio, mes, dia = fecha.split("-")
         usuario_id = Usuario.get(Usuario.nombre == usuario).id
-        total = 0
         usuario_detalle = Consumo.select(Consumo.producto,
                                          fn.Sum(Consumo.cantidad)
                                          .alias("cantidad"),

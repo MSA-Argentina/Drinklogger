@@ -30,7 +30,6 @@ function cambioFecha(nameSelect)
 {
     if(nameSelect){
         admOptionValue = nameSelect.value;
-        console.log(admOptionValue);
         if(admOptionValue != "0"){
             futuro.style.display = "inline-block";
             fecha.style.display = "none";
