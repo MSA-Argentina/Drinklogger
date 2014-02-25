@@ -3,6 +3,7 @@ from config import app
 from config import db
 from peewee import *
 
+
 class Producto(db.Model):
     nombre = CharField()
     precio = FloatField()

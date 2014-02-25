@@ -5,6 +5,7 @@ from database import *
 from flask_peewee.admin import Admin
 from flask_peewee.admin import ModelAdmin
 
+
 class ProductoAdmin(ModelAdmin):
     columns = ("nombre", "precio", "cant",)
 

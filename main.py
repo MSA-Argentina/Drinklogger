@@ -11,6 +11,7 @@ from flask import request
 
 admin.setup()
 
+
 @app.errorhandler(404)
 def pagNoEncontrada(error):
     return render_template("error.html", error=error.code)
