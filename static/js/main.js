@@ -26,6 +26,18 @@ function admSelectCheck(nameSelect)
         }
 }
 
+function cambioFecha(nameSelect)
+{
+    if(nameSelect){
+        admOptionValue = nameSelect.value;
+        console.log(admOptionValue);
+        if(admOptionValue != "0"){
+            futuro.style.display = "inline-block";
+            fecha.style.display = "none";
+            };
+        }
+}
+
 function enable (nameSelect) {
     admOptionValue = nameSelect.value;
     if (admOptionValue != 0) {

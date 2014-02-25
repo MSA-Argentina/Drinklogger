@@ -75,14 +75,13 @@
             <div id="consulta" style="display:none;" class="seven columns">
                 <h2>Consultas</h2>
 
-                <ul>
-                    {% for item in consumo %}
-                        <li><b>{{ item.usuario }}</b> consumió <b>{{ item.cantidad }} {{ item.producto }}</b> el día <b>{{ item.fecha }}</b> por un total de <b>{{ item.precio * item.cantidad }}</b></li>
-                    {% endfor %}
-                </ul>
-
                 <form method="POST" action="/consulta/">
-                    <p>Fecha: <input id="date" name="fecha" type="text" onclick="scwShow(this,event);" /></p>
+                    <p>Fecha: <input id="date" name="pasado" type="text" size="8" value="{{ semana_pasada }}" onclick="scwShow(this,event);" /> a <select id="fecha" onchange="cambioFecha(this)">
+                        <option value="0" selected>Hoy</option>
+                        <option value="1">Otra fecha</option>
+                    </select>
+                    <input input id="futuro" style="display:none;" name="futuro" type="text" size="8" onclick="scwShow(this,event);" />
+                    </p>
                     <p><input type="submit" value="Consultar"></p>
                 </form>
             </div>

@@ -27,8 +27,11 @@ def home():
     productos = Producto.select()
     usuarios = Usuario.select()
     exito = None
+    semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
+    semana_pasada = semana_pasada.date()
     return render_template("index.html", productos=productos,
-                           usuarios=usuarios, exito=exito,)
+                           usuarios=usuarios, semana_pasada=semana_pasada,
+                           exito=exito,)
 
 
 @app.route("/mandar", methods=["POST", "GET"])
@@ -66,15 +69,20 @@ def consumo():
 
 @app.route("/consulta/", methods=["POST"])
 def consulta():
-    if (request.form["fecha"] != ""):
+    if (request.form["pasado"] != ""):
         from datetime import date
-        anio, mes, dia = request.form["fecha"].split("-")
-        fecha = date(int(anio), int(mes), int(dia))
+        anio, mes, dia = request.form["pasado"].split("-")
+        pasado = date(int(anio), int(mes), int(dia))
+        if (request.form["futuro"] == ""):
+            futuro = datetime.datetime.now().date()
+        else:
+            anio, mes, dia = request.form["futuro"].split("-")
+            futuro = date(int(anio), int(mes), int(dia))
         arreglo_consumo = {}
         consumo_semanal = Consumo.select(Consumo.precio,
                                          Consumo.cantidad,
                                          Consumo.usuario,)\
-            .where(Consumo.fecha >= fecha)
+            .where((Consumo.fecha >= pasado) & (Consumo.fecha <= futuro))
         for detalle in consumo_semanal:
             if str(detalle.usuario.nombre) not in arreglo_consumo:
                 arreglo_consumo[str(detalle.usuario.nombre)] \
@@ -82,9 +90,16 @@ def consulta():
             else:
                 arreglo_consumo[str(detalle.usuario.nombre)] \
                     += detalle.precio * detalle.cantidad
-        return render_template("consultas.html",
-                               consumos=arreglo_consumo,
-                               fecha=str(fecha))
+        if (futuro == datetime.datetime.now().date()):
+            return render_template("consultas.html",
+                                   consumos=arreglo_consumo,
+                                   pasado=str(pasado),
+                                   futuro="hoy",)
+        else:
+            return render_template("consultas.html",
+                                   consumos=arreglo_consumo,
+                                   pasado=str(pasado),
+                                   futuro=str(futuro),)
     else:
         abort(406)
 
