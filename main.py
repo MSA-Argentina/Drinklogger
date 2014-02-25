@@ -129,6 +129,7 @@ def consumo():
         return render_template("index.html", productos=productos,
                                usuarios=usuarios, exito=exito,)
 
+
 @app.route("/consulta/", methods=["POST"])
 def consulta():
     if (request.form["fecha"] != ""):
@@ -139,15 +140,18 @@ def consulta():
         consumo_semanal = Consumo.select(Consumo.precio,
                                          Consumo.cantidad,
                                          Consumo.usuario,)\
-                                         .where(Consumo.fecha >= fecha)
+            .where(Consumo.fecha >= fecha)
         for detalle in consumo_semanal:
             if str(detalle.usuario.nombre) not in arreglo_consumo:
-                arreglo_consumo[str(detalle.usuario.nombre)] = detalle.precio * detalle.cantidad
+                arreglo_consumo[str(detalle.usuario.nombre)] \
+                    = detalle.precio * detalle.cantidad
             else:
-                arreglo_consumo[str(detalle.usuario.nombre)] += detalle.precio * detalle.cantidad
+                arreglo_consumo[str(detalle.usuario.nombre)] \
+                    += detalle.precio * detalle.cantidad
         return render_template("consultas.html",
                                consumos=arreglo_consumo,
                                fecha=str(fecha))
+
 
 @app.route("/consulta/<usuario>/<fecha>/", methods=["GET"])
 def consulta_detalle(usuario, fecha):
@@ -156,10 +160,12 @@ def consulta_detalle(usuario, fecha):
         usuario_id = Usuario.get(Usuario.nombre == usuario).id
         total = 0
         usuario_detalle = Consumo.select(Consumo.producto,
-                                         fn.Sum(Consumo.cantidad).alias("cantidad"),
+                                         fn.Sum(Consumo.cantidad)
+                                         .alias("cantidad"),
                                          Consumo.precio,
                                          Consumo.fecha)\
-                                 .where((Consumo.usuario == usuario_id) & (Consumo.fecha >= fecha))\
+                                 .where((Consumo.usuario == usuario_id)
+                                        & (Consumo.fecha >= fecha))\
                                  .group_by(Consumo.producto,
                                            Consumo.cantidad,
                                            Consumo.precio,
