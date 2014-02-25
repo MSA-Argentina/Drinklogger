@@ -1,92 +1,15 @@
 # Imports
-import os
 import datetime
+from config import app
+from config import db
+from database import *
+from admin import admin
 from flask import abort
-from flask import Flask
 from flask import render_template
 from flask import request
-from peewee import *
-from flask_peewee.db import Database
-from flask_peewee.admin import Admin
-from flask_peewee.admin import ModelAdmin
-from flask_peewee.rest import RestResource
-from flask_peewee.auth import Auth
 
-# Configuracion
-DATABASE = {
-    'name': 'drinklogger',
-    'engine': 'peewee.PostgresqlDatabase',
-    'user': 'leandro',
-}
-
-DEBUG = True
-SECRET_KEY = '0303456'
-
-tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template')
-
-app = Flask(__name__, template_folder=tmpl_dir)
-app.config.from_object(__name__)
-
-db = Database(app)
-auth = Auth(app, db)
-
-# Modelos
-
-
-class Producto(db.Model):
-    nombre = CharField()
-    precio = FloatField()
-    desc = TextField()
-    cant = IntegerField()
-
-    class Meta:
-        order_by = ('nombre',)
-
-    def __unicode__(self):
-        return self.nombre
-
-
-class Usuario(db.Model):
-    nombre = CharField()
-    email = CharField()
-
-    class Meta:
-        order_by = ('nombre',)
-
-    def __unicode__(self):
-        return self.nombre
-
-
-class Consumo(db.Model):
-    usuario = ForeignKeyField(Usuario)
-    producto = ForeignKeyField(Producto)
-    precio = FloatField()
-    cantidad = IntegerField()
-    fecha = DateField(default=datetime.datetime.now().date())
-
-    class Meta:
-        order_by = ('-fecha',)
-
-
-# Admin
-class ProductoAdmin(ModelAdmin):
-    columns = ("nombre", "precio", "cant",)
-
-
-class ConsumoAdmin(ModelAdmin):
-    columns = ("producto", "usuario", "fecha", "cantidad", "precio",)
-    filter_fields = ("fecha",)
-
-
-admin = Admin(app, auth, branding="Drinklogger")
-admin.register(Producto, ProductoAdmin)
-admin.register(Usuario)
-admin.register(Consumo, ConsumoAdmin)
 
 admin.setup()
-
-# Vistas
-
 
 @app.errorhandler(404)
 def pagNoEncontrada(error):
