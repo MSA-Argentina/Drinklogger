@@ -10,7 +10,7 @@ function mostrarConsultas () {
     inventory.style.display = "none";
 }
 
-var firstCheck = false; // Work in Progress
+var firstCheck = false;
 
 function admSelectCheck(nameSelect)
 {
@@ -23,6 +23,9 @@ function admSelectCheck(nameSelect)
         } else {
             cantidad.style.display = "none";
             persona.style.display = "none";
+            document.getElementById("personas").selectedIndex = 0;
+            document.getElementById("personas").value = 0;
+            document.getElementById("enviar").disabled = true;
             firstCheck = false;
         }
     }
