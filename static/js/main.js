@@ -19,11 +19,13 @@ function admSelectCheck(nameSelect)
         if(admOptionValue != "null"){
             cantidad.style.display = "inline-block";
             persona.style.display = "inline-block";
-            };
-        }
-        else {
+            firstCheck = true;
+        } else {
+            cantidad.style.display = "none";
             persona.style.display = "none";
+            firstCheck = false;
         }
+    }
 }
 
 function cambioFecha(nameSelect)
@@ -39,7 +41,7 @@ function cambioFecha(nameSelect)
 
 function enable (nameSelect) {
     admOptionValue = nameSelect.value;
-    if (admOptionValue != 0) {
+    if ((admOptionValue != 0) && (firstCheck == true)) {
         document.getElementById("enviar").disabled = false;
     } else {
         document.getElementById("enviar").disabled = true;
