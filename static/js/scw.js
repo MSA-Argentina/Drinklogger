@@ -243,11 +243,11 @@
     // alternatively, hard code a date like this...
     //      var scwBaseYear = 1990;
 
-    var scwBaseYear        = scwDateNow.getFullYear()-10;
+    var scwBaseYear        = scwDateNow.getFullYear();
 
     // How many years do want to be valid and to show in the drop-down list?
 
-    var scwDropDownYears   = 20;
+    var scwDropDownYears   = 1;
 
     // All language-dependent changes can be made here...
 
@@ -512,14 +512,14 @@
             'table.scw      {padding:       1px;'                       +
                             'vertical-align:middle;'                    +
                             'border:        ridge 2px;'                 +
-                            'font-size:     10pt;'                      +
+                            'font-size:     16px;'                      +
                             'font-family:   ' +
                                    'Verdana,Arial,Helvetica,Sans-Serif;'+
                             'font-weight:   bold;}'                     +
             'td.scwDrag,'                                               +
             'td.scwHead                 {padding:       0px 0px;'       +
                                         'text-align:    center;}'       +
-            'td.scwDrag                 {font-size:     8pt;}'          +
+            'td.scwDrag                 {font-size:     16px;}'         +
             'select.scwHead             {margin:        3px 1px;'       +
                                         'text-align:    center;}'       +
             'input.scwHead              {height:        22px;'          +
@@ -528,7 +528,7 @@
                                         'text-align:    center;'        +
                                         'margin:        2px 1px;'       +
                                         'font-weight:   bold;'          +
-                                        'font-size:     10pt;'          +
+                                        'font-size:     12px;'          +
                                         'font-family:   fixedSys;}'     +
             'td.scwWeekNumberHead,'                                     +
             'td.scwWeek                 {padding:       0px;'           +
@@ -542,7 +542,7 @@
                                         'vertical-align:middle;'        +
                                         'font-weight:   normal;}'       +
             'table.scwCells             {text-align:    right;'         +
-                                        'font-size:     8pt;'           +
+                                        'font-size:     18px;'          +
                                         'width:         96%;}'          +
             'td.scwCells,'                  +
             'td.scwCellsHover,'             +
