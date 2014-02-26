@@ -40,6 +40,8 @@ def consumo():
     productos = Producto.select()
     usuarios = Usuario.select()
     consumo = Consumo.select()
+    semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
+    semana_pasada = semana_pasada.date()
     if (request.form["productos"] != "null"):
         cantidad_actual = Producto\
             .get(Producto.id == request.form["productos"]).cant
@@ -56,16 +58,20 @@ def consumo():
                 .where(Producto.id == request.form["productos"])
             actualizar_cantidad.execute()
             exito = True
+    # Mejorar este codigo
             return render_template("index.html", productos=productos,
-                                   usuarios=usuarios, exito=exito,)
+                                   usuarios=usuarios, exito=exito,
+                                   semana_pasada=semana_pasada,)
         else:
             exito = False
             return render_template("index.html", productos=productos,
-                                   usuarios=usuarios, exito=exito,)
+                                   usuarios=usuarios, exito=exito,
+                                   semana_pasada=semana_pasada,)
     else:
         exito = False
         return render_template("index.html", productos=productos,
-                               usuarios=usuarios, exito=exito,)
+                               usuarios=usuarios, exito=exito,
+                               semana_pasada=semana_pasada,)
 
 
 @app.route("/consulta/", methods=["POST"])
@@ -93,16 +99,10 @@ def consulta():
                 else:
                     arreglo_consumo[str(detalle.usuario.nombre)] \
                         += detalle.precio * detalle.cantidad
-            if (futuro == datetime.datetime.now().date()):
-                return render_template("consultas.html",
-                                       consumos=arreglo_consumo,
-                                       pasado=str(pasado),
-                                       futuro="hoy",)
-            else:
-                return render_template("consultas.html",
-                                       consumos=arreglo_consumo,
-                                       pasado=str(pasado),
-                                       futuro=str(futuro),)
+            return render_template("consultas.html",
+                                    consumos=arreglo_consumo,
+                                    pasado=str(pasado),
+                                    futuro=str(futuro),)
         else:
             abort(406)
     else:

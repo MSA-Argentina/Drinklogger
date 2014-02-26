@@ -22,7 +22,7 @@ function admSelectCheck(nameSelect)
             };
         }
         else {
-            quantity.style.display = "none";
+            persona.style.display = "none";
         }
 }
 
