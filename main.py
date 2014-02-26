@@ -97,8 +97,7 @@ def consulta():
                 return render_template("consultas.html",
                                        consumos=arreglo_consumo,
                                        pasado=str(pasado),
-                                       futuro=str(futuro),
-                                       hoy="hoy",)
+                                       futuro="hoy",)
             else:
                 return render_template("consultas.html",
                                        consumos=arreglo_consumo,
