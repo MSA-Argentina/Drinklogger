@@ -14,3 +14,4 @@ Consumo
 --Id_Producto
 --Cantidad
 --Fecha
+--Activo

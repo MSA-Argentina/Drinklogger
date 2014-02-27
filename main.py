@@ -98,7 +98,9 @@ def consulta():
             consumo_semanal = Consumo.select(Consumo.precio,
                                              Consumo.cantidad,
                                              Consumo.usuario,)\
-                .where((Consumo.fecha >= pasado) & (Consumo.fecha <= futuro))
+                .where((Consumo.fecha >= pasado)\
+                       & (Consumo.fecha <= futuro)
+                       & (Consumo.activo == True))
             # Mejorar este codigo
             for detalle in consumo_semanal:
                 if str(detalle.usuario.nombre) not in arreglo_consumo:
@@ -119,7 +121,7 @@ def consulta():
 
 @app.route("/consulta/<usuario>/<pasado>-a-<futuro>/", methods=["GET"])
 def consulta_detalle(usuario, pasado, futuro):
-    if (usuario != '' and pasado != '' and futuro != ''):
+    if (usuario != "" and pasado != "" and futuro != ""):
         usuario_id = Usuario.get(Usuario.nombre == usuario).id
         usuario_detalle = Consumo.select(Consumo.producto,
                                          fn.Sum(Consumo.cantidad)
@@ -140,9 +142,26 @@ def consulta_detalle(usuario, pasado, futuro):
     else:
         abort(406)
 
+@app.route("/consulta/cierre/<pasado>-a-<futuro>/", methods=["GET"])
+def cierre_consumos(pasado, futuro):
+    if (pasado != "" and futuro != ""):
+        productos = Producto.select()
+        usuarios = Usuario.select()
+        exito = "Cierre"
+        semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
+        semana_pasada = semana_pasada.date()
+
+        cierre_usuario = Consumo.update(activo=False)\
+                         .where((Consumo.fecha >= pasado)
+                                & (Consumo.fecha <= futuro))
+        cierre_usuario.execute()
+
+        return render_template("index.html", productos=productos,
+                               usuarios=usuarios, semana_pasada=semana_pasada,
+                               exito=exito,)
 
 # Principal
-if __name__ == '__main__':
+if __name__ == "__main__":
     Usuario.create_table(fail_silently=True)
     Producto.create_table(fail_silently=True)
     Consumo.create_table(fail_silently=True)

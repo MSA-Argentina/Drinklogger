@@ -16,8 +16,9 @@
         {% if exito != None %}
             {% if exito == True %}
                 <div class="exito">Hecho. Ya podés disfrutar tu bebida.</div>
-            {% endif %}
-            {% if exito == False %}
+            {% elif exito == "Cierre" %}
+                <div class="exito">Cierre de caja exitoso.</div>
+            {% elif exito == False %}
                 <div class="error">Error. Puede que no haya suficientes bebidas o que algo ande mal. Intente de nuevo.</div>
             {% endif %}
         {% endif %}

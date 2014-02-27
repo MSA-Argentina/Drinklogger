@@ -35,6 +35,7 @@ class Consumo(db.Model):
     precio = FloatField()
     cantidad = IntegerField()
     fecha = DateField(default=datetime.datetime.now().date())
+    activo = BooleanField(default=True)
 
     class Meta:
         order_by = ('-fecha',)

@@ -15,7 +15,8 @@ class ProductoAdmin(ModelAdmin):
 
 
 class ConsumoAdmin(ModelAdmin):
-    columns = ("producto", "usuario", "fecha", "cantidad", "precio",)
+    columns = ("producto", "usuario", "fecha",
+               "cantidad", "precio", "activo",)
     filter_fields = ("fecha",)
 
 class UsuarioAdmin(ModelAdmin):
