@@ -74,7 +74,7 @@
                             <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
                         {% endfor %}
                     </select></li>
-                    <li id="pass">Contraseña: <input class="keyboardInput" size="10" type="password" name="pass" onforminput="checkPass(this)"></li>
+                    <li id="pass">Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass" onforminput="checkPass(this)"></li>
                     <li><input id="enviar" type="submit" value="Enviar" disabled></li>
                 </ul>
                 </form>

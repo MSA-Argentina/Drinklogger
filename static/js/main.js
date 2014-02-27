@@ -27,6 +27,7 @@ function admSelectCheck(nameSelect)
             pass.style.display = "none";
             document.getElementById("personas").selectedIndex = 0;
             document.getElementById("personas").value = 0;
+            document.getElementById("password").value = "";
             document.getElementById("enviar").disabled = true;
             firstCheck = false;
         }
