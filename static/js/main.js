@@ -19,10 +19,12 @@ function admSelectCheck(nameSelect)
         if(admOptionValue != "null"){
             cantidad.style.display = "inline-block";
             persona.style.display = "inline-block";
+            pass.style.display = "inline-block";
             firstCheck = true;
         } else {
             cantidad.style.display = "none";
             persona.style.display = "none";
+            pass.style.display = "none";
             document.getElementById("personas").selectedIndex = 0;
             document.getElementById("personas").value = 0;
             document.getElementById("enviar").disabled = true;

@@ -7,9 +7,10 @@ Usuario
 --Id
 --Nombre
 --Email
+--Password
 Consumo
 --Id
 --Id_Usuario
---Producto
+--Id_Producto
 --Cantidad
 --Fecha

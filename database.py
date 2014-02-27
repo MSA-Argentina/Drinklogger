@@ -20,6 +20,7 @@ class Producto(db.Model):
 class Usuario(db.Model):
     nombre = CharField()
     email = CharField()
+    password = CharField()
 
     class Meta:
         order_by = ('nombre',)
