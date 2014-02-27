@@ -49,7 +49,8 @@ def consumo():
             cantidad_actual = Producto\
                 .get(Producto.id == request.form["productos"]).cant
             if (request.form["cantidad"] > cantidad_actual):
-                cantidad_nueva = cantidad_actual - int(request.form["cantidad"])
+                cantidad_nueva = cantidad_actual - \
+                    int(request.form["cantidad"])
                 consumo = Consumo()
                 consumo.usuario = request.form["personas"]
                 consumo.producto = request.form["productos"]
@@ -98,7 +99,7 @@ def consulta():
             consumo_semanal = Consumo.select(Consumo.precio,
                                              Consumo.cantidad,
                                              Consumo.usuario,)\
-                .where((Consumo.fecha >= pasado)\
+                .where((Consumo.fecha >= pasado)
                        & (Consumo.fecha <= futuro)
                        & (Consumo.activo == True))
             # Mejorar este codigo
@@ -110,9 +111,9 @@ def consulta():
                     arreglo_consumo[str(detalle.usuario.nombre)] \
                         += detalle.precio * detalle.cantidad
             return render_template("consultas.html",
-                                    consumos=arreglo_consumo,
-                                    pasado=str(pasado),
-                                    futuro=str(futuro),)
+                                   consumos=arreglo_consumo,
+                                   pasado=str(pasado),
+                                   futuro=str(futuro),)
         else:
             abort(406)
     else:
@@ -142,6 +143,7 @@ def consulta_detalle(usuario, pasado, futuro):
     else:
         abort(406)
 
+
 @app.route("/consulta/cierre/<pasado>-a-<futuro>/", methods=["GET"])
 def cierre_consumos(pasado, futuro):
     if (pasado != "" and futuro != ""):
@@ -152,8 +154,8 @@ def cierre_consumos(pasado, futuro):
         semana_pasada = semana_pasada.date()
 
         cierre_usuario = Consumo.update(activo=False)\
-                         .where((Consumo.fecha >= pasado)
-                                & (Consumo.fecha <= futuro))
+            .where((Consumo.fecha >= pasado)
+                   & (Consumo.fecha <= futuro))
         cierre_usuario.execute()
 
         return render_template("index.html", productos=productos,

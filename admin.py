@@ -19,8 +19,10 @@ class ConsumoAdmin(ModelAdmin):
                "cantidad", "precio", "activo",)
     filter_fields = ("fecha",)
 
+
 class UsuarioAdmin(ModelAdmin):
     columns = ("nombre", "email",)
+
 
 class UsuarioPanel(AdminPanel):
     template_name = "admin/usuarios.html"
@@ -32,8 +34,8 @@ class UsuarioPanel(AdminPanel):
 
     def create(self):
         if request.method == "POST":
-            if ((request.form["nombre"] != "")\
-                and (request.form["email"] != "")\
+            if ((request.form["nombre"] != "")
+                and (request.form["email"] != "")
                 and (request.form["pass"] != "")):
                 Usuario.create(
                     nombre=str(request.form["nombre"]),
@@ -51,5 +53,6 @@ class UsuarioPanel(AdminPanel):
 
 admin = Admin(app, auth, branding="Drinklogger")
 admin.register(Producto, ProductoAdmin)
+admin.register(Usuario, UsuarioAdmin)
 admin.register_panel('Usuarios', UsuarioPanel)
 admin.register(Consumo, ConsumoAdmin)
