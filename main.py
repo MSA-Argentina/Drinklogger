@@ -225,7 +225,6 @@ def elimino_usuario(usuario_id):
         return redirect(url_for("manejo_usuario"))
 
 
-
 # Principal
 if __name__ == "__main__":
     Usuario.create_table(fail_silently=True)
