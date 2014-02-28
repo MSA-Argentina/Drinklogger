@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+    <title>Drinklogger</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/keyboard.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<meta charset="utf-8">
+<script src="{{ url_for('static', filename='js/scw.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
+</head>
+<body>
+    <div id="container" class="container">{% block content %}{% endblock %}</div>
+</body>
+</html>
