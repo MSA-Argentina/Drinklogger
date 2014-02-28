@@ -4,6 +4,7 @@ import datetime
 from hashlib import md5
 from config import app
 from config import db
+from config import auth
 from database import *
 from admin import admin
 from flask import abort
@@ -167,7 +168,9 @@ def cierre_consumos(pasado, futuro):
 
 
 @app.route("/usuario/")
+@auth.login_required
 def manejo_usuario():
+    user = auth.get_logged_in_user()
     usuarios = Usuario.select().order_by(Usuario.id.asc())
     return render_template("usuarios.html", usuarios=usuarios)
 
