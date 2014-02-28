@@ -1,3 +1,4 @@
+# coding: utf-8
 # Imports
 import datetime
 from hashlib import md5
@@ -64,7 +65,7 @@ def consumo():
                     .where(Producto.id == request.form["productos"])
                 actualizar_cantidad.execute()
                 exito = True
-        # Mejorar este codigo
+        # Mejorar este código
                 return render_template("index.html", productos=productos,
                                        usuarios=usuarios, exito=exito,
                                        semana_pasada=semana_pasada,)
@@ -104,7 +105,7 @@ def consulta():
                 .where((Consumo.fecha >= pasado)
                        & (Consumo.fecha <= futuro)
                        & (Consumo.activo == True))
-            # Mejorar este codigo
+            # Mejorar este código
             for detalle in consumo_semanal:
                 if str(detalle.usuario.nombre) not in arreglo_consumo:
                     arreglo_consumo[str(detalle.usuario.nombre)] \
