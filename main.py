@@ -8,6 +8,8 @@ from admin import admin
 from flask import abort
 from flask import render_template
 from flask import request
+from flask import redirect
+from flask import url_for
 
 
 # Esto crea las vistas del admin tipo django
@@ -158,9 +160,71 @@ def cierre_consumos(pasado, futuro):
                    & (Consumo.fecha <= futuro))
         cierre_usuario.execute()
 
-        return render_template("index.html", productos=productos,
-                               usuarios=usuarios, semana_pasada=semana_pasada,
-                               exito=exito,)
+        return render_template("index.html",
+                               productos=productos, usuarios=usuarios,
+                               semana_pasada=semana_pasada, exito=exito,)
+
+
+@app.route("/usuario/")
+def manejo_usuario():
+    usuarios = Usuario.select().order_by(Usuario.id.asc())
+    return render_template("usuarios.html", usuarios=usuarios)
+
+
+@app.route("/usuario/crear/", methods=["POST"])
+def crear_usuario():
+    if (request.form["nombre"] != "" \
+        and request.form["email"] != ""\
+        and request.form["pass"] != ""):
+        try:
+            Usuario.get(Usuario.email == request.form["email"])
+            return redirect(url_for("manejo_usuario"))
+        except Usuario.DoesNotExist:
+            Usuario.create(
+                nombre=request.form["nombre"],
+                email=request.form["email"],
+                password=md5(request.form["pass"]).hexdigest(),
+            )
+            return redirect(url_for("manejo_usuario"))
+
+
+@app.route("/usuario/editar/<id_usuario>/", methods=["GET"])
+def editar_usuario(id_usuario):
+    if (id_usuario != "" and id_usuario.isdigit()):
+        usuario_datos = Usuario.get(Usuario.id == id_usuario)
+        return render_template("editar.html", usuario=usuario_datos)
+    else:
+        abort(406)
+
+@app.route("/usuario/editado/", methods=["POST"])
+def edito_usuario():
+    if request.method == "POST":
+        datos_usuario = Usuario.get(Usuario.id == request.form["usuario_id"])
+        if request.form["pass"] == "":
+            act_usuario = Usuario.update(nombre=request.form["nombre"],
+                                   email=request.form["email"],)\
+                               .where(Usuario.id == request.form["usuario_id"])
+            act_usuario.execute()
+        else:
+            passwd = md5(request.form["pass"]).hexdigest()
+            passwd2 = md5(request.form["pass2"]).hexdigest()
+            if (passwd == passwd2):
+                act_usuario = Usuario.update(nombre=request.form["nombre"],
+                                       email=request.form["email"],
+                                       password=passwd,)\
+                                   .where(Usuario.id == request.form["usuario_id"])
+                act_usuario.execute()
+        return redirect(url_for("manejo_usuario"))
+
+
+@app.route("/usuario/eliminar/<usuario_id>/", methods=["GET"])
+def elimino_usuario(usuario_id):
+    if (usuario_id != "" and usuario_id.isdigit()):
+        usuario_eliminar = Usuario.get(Usuario.id == usuario_id)
+        usuario_eliminar.delete_instance()
+        return redirect(url_for("manejo_usuario"))
+
+
 
 # Principal
 if __name__ == "__main__":

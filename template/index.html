@@ -1,18 +1,5 @@
-<!doctype html>
-<html>
-<head>
-    <title>Drinklogger</title>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/keyboard.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<meta charset="utf-8">
-<script src="{{ url_for('static', filename='js/scw.js') }}"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-<script src="{{ url_for('static', filename='js/keyboard.js') }}"></script>
-</head>
-<body>
-    <div id="container" class="container">
+{% extends "base.html" %}
+    {% block content %}
         {% if exito != None %}
             {% if exito == True %}
                 <div class="exito">Hecho. Ya podés disfrutar tu bebida.</div>
@@ -30,6 +17,7 @@
                 <ul class="menu">
                     <li><a href="javascript:mostrarPedidos();">Pedir</a></li>
                     <li><a href="javascript:mostrarConsultas();">Consultas</a></li>
+                    <li><a href="/usuario/">Manejo de Usuarios</a></li>
                     <li><a href="/admin/">Administración</a></li>
                 </ul>
             </div>
@@ -74,7 +62,7 @@
                             <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
                         {% endfor %}
                     </select></li>
-                    <li id="pass">Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass" onforminput="checkPass(this)"></li>
+                    <li id="pass">Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass"></li>
                     <li><input id="enviar" type="submit" value="Enviar" disabled></li>
                 </ul>
                 </form>
@@ -92,6 +80,4 @@
                     <p><input type="submit" value="Consultar"></p>
                 </form>
             </div>
-    </div>
-</body>
-</html>
+    {% endblock %}

@@ -1,16 +1,5 @@
-<!doctype html>
-<html>
-<head>
-    <title>Drinklogger</title>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<meta charset="utf-8">
-
-</head>
-<body>
-    <div id="container" class="container">
-
+{% extends "base.html" %}
+    {% block content %}
         <div class="sixteen columns">
 
             <h2>Error {{ error }}</h2>
@@ -25,7 +14,4 @@
 
             <a class="button" href="javascript:history.go(-1);">Volver atrás</a>
         </div>
-
-    </div>
-</body>
-</html>
+    {% endblock %}
