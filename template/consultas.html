@@ -11,7 +11,7 @@
                 {% endfor %}
             </ul>
 
-            <a class="button" href="javascript:history.go(-1);">Volver atrás</a>
+            <a class="button" href="{{ url_for('home') }}">Volver atrás</a>
             <a class="button" href="/consulta/cierre/{{ pasado }}-a-{{ futuro }}/">Cierre de Caja</a>
         </div>
     {% endblock %}
