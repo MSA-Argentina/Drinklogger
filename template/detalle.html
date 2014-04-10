@@ -1,15 +1,16 @@
 {% extends "base.html" %}
     {% block content %}
+    <div class="uk-grid"></div>
         <div class="sixteen columns">
 
             <h2>Detalle de {{ args['usuario'] }}</h2>
 
-            <ul>
+            <ul class="uk-list uk-list-space uk-list-line">
                 {% for detalle in args['detalles'] %}
                     <li><b>{{ detalle.fecha }}</b> - {{ detalle.producto }} x{{ detalle.cantidad }} (${{ detalle.precio }})</li>
                 {% endfor %}
             </ul>
 
-            <a class="button" href="javascript:history.go(-1);">Volver atrás</a>
+            <a class="uk-button uk-button-primary uk-button-large" href="javascript:history.go(-1);">Volver atrás</a>
         </div>
     {% endblock %}

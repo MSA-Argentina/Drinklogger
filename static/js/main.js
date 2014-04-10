@@ -17,8 +17,8 @@ function admSelectCheck(nameSelect) {
         admOptionValue = nameSelect.value;
         if (admOptionValue != "null") {
             cantidad.style.display = "inline-block";
-            persona.style.display = "inline-block";
-            pass.style.display = "inline-block";
+            persona.style.display = "block";
+            pass.style.display = "block";
             firstCheck = true;
         } else {
             cantidad.style.display = "none";

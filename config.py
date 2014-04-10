@@ -6,14 +6,16 @@ from flask_peewee.rest import RestAPI
 
 # Configuracion
 DATABASE = {
-    'name': 'drinklogger',
-    'engine': 'peewee.PostgresqlDatabase',
-    'user': 'leandro',
+    'name': '',
+    'engine': '',
+    'user': '',
+    'pass': '',
 }
 
-DEBUG = True
-SECRET_KEY = '0303456'
+DEBUG = False # Activar fuera del repo
+SECRET_KEY = '' # Agregar fuera del repo
 
+# Evita errores al traer templates en distintos ambientes
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template')
 
 app = Flask(__name__, template_folder=tmpl_dir)

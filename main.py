@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 # Imports
 import datetime
 from hashlib import md5
@@ -20,6 +20,7 @@ admin.setup()
 # Y esto el API REST para el log de bebidas
 api.setup()
 
+# Errores genéricos
 @app.errorhandler(404)
 def pagNoEncontrada(error):
     return render_template("error.html", error=error.code)
@@ -53,6 +54,8 @@ def home():
 def consumo():
     usuarios = Usuario.select()
     consumo = Consumo.select()
+    productos = Producto.select()
+    admin = auth.get_logged_in_user()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
     get_usuario = Usuario.get(Usuario.id == request.form["personas"]).nombre
@@ -87,8 +90,10 @@ def consumo():
         error = 'pass'
 
     args = {}
+    args['productos'] = productos
     args['usuarios'] = usuarios
     args['usuario_compra'] = get_usuario
+    args['auth'] = admin
     args['exito'] = exito
     args['error'] = error
     args['semana_pasada'] = semana_pasada
@@ -245,6 +250,8 @@ def elimino_usuario(usuario_id):
 
 # Principal
 if __name__ == "__main__":
+    # Crea las tablas pero no avisa si falló
+    # Conviene borrar una vez hecha la primera pasada
     Usuario.create_table(fail_silently=True)
     Producto.create_table(fail_silently=True)
     Consumo.create_table(fail_silently=True)
