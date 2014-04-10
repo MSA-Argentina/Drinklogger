@@ -1,10 +1,10 @@
-function mostrarPedidos () {
+function mostrarPedidos() {
     main.style.display = "none";
     inventory.style.display = "inline-block";
     consulta.style.display = "none";
 }
 
-function mostrarConsultas () {
+function mostrarConsultas() {
     main.style.display = "none";
     consulta.style.display = "inline-block";
     inventory.style.display = "none";
@@ -12,11 +12,10 @@ function mostrarConsultas () {
 
 var firstCheck = false;
 
-function admSelectCheck(nameSelect)
-{
-    if(nameSelect){
+function admSelectCheck(nameSelect) {
+    if (nameSelect) {
         admOptionValue = nameSelect.value;
-        if(admOptionValue != "null"){
+        if (admOptionValue != "null") {
             cantidad.style.display = "inline-block";
             persona.style.display = "inline-block";
             pass.style.display = "inline-block";
@@ -34,18 +33,17 @@ function admSelectCheck(nameSelect)
     }
 }
 
-function cambioFecha(nameSelect)
-{
-    if(nameSelect){
+function cambioFecha(nameSelect) {
+    if (nameSelect) {
         admOptionValue = nameSelect.value;
-        if(admOptionValue != "0"){
+        if (admOptionValue != "0") {
             futuro.style.display = "inline-block";
             fecha.style.display = "none";
-            };
-        }
+        };
+    }
 }
 
-function enable (nameSelect) {
+function enable(nameSelect) {
     admOptionValue = nameSelect.value;
     if ((admOptionValue != 0) && (firstCheck == true)) {
         document.getElementById("enviar").disabled = false;
@@ -53,3 +51,48 @@ function enable (nameSelect) {
         document.getElementById("enviar").disabled = true;
     };
 }
+
+function get_bebidas() {
+    request = new XMLHttpRequest();
+    request.open('GET', '/api/producto/', true);
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            data = JSON.parse(request.responseText);
+            data = data['objects'];
+            var largo_de_lista = data.length;
+            ul = document.getElementById('lista');
+            for (var i = 0; i < largo_de_lista; ++i) {
+                var nuevo_item = document.createElement('li');
+                if (data[i]['cant'] != 0) {
+                    nuevo_item.innerHTML = data[i]['nombre'] + ' <b>x' + data[i]['cant'] + '</b>';
+                } else {
+                    nuevo_item.innerHTML = data[i]['nombre'] + ' <span class="err">No hay</span>';
+                };
+                ul.appendChild(nuevo_item);
+            }
+        } else {
+            return console.log('Error');
+        }
+    };
+
+    request.onerror = function() {
+        return alert('Error');
+    };
+
+    request.send();
+}
+
+function refrescar_bebidas() {
+    var ul = document.getElementById('lista');
+    ul.innerHTML = '';
+    get_bebidas();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    get_bebidas();
+    var refrescar = setInterval(function() {
+        refrescar_bebidas()
+    }, 60000);
+});

@@ -1,12 +1,9 @@
 Flask
 Jinja2
-Ojota
 Werkzeug
 flask-peewee
 itsdangerous
 peewee
 psycopg2
-pygobject
 six
 wsgiref
-zaguan

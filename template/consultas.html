@@ -3,15 +3,15 @@
         <div class="sixteen columns">
             <h2>Historial de consumos</h2>
 
-            <h4>De {{ pasado }} a {{ futuro }}</h4>
+            <h4>De {{ args['pasado'] }} a {{ args['futuro'] }}</h4>
 
             <ul>
-                {% for usuario, total in consumos.items() %}
-                    <li><b>{{ usuario }}</b> Total: <b>${{ total }}</b> <a class="button" href="/consulta/{{ usuario }}/{{ pasado }}-a-{{ futuro }}/">Detalle</a></i></li>
+                {% for usuario, total in args['consumos'].items() %}
+                    <li><b>{{ usuario }}</b> Total: <b>${{ total }}</b> <a class="button" href="/consulta/{{ usuario }}/{{ args['pasado'] }}-a-{{ args['futuro'] }}/">Detalle</a></i></li>
                 {% endfor %}
             </ul>
 
             <a class="button" href="{{ url_for('home') }}">Volver atrás</a>
-            <a class="button" href="/consulta/cierre/{{ pasado }}-a-{{ futuro }}/">Cierre de Caja</a>
+            <a class="button" href="/consulta/cierre/{{ args['pasado'] }}-a-{{ args['futuro'] }}/">Cierre de Caja</a>
         </div>
     {% endblock %}

@@ -2,11 +2,11 @@
     {% block content %}
         <div class="sixteen columns">
 
-            <h2>Error {{ error }}</h2>
+            <h2>Error {{ args['error'] }}</h2>
 
-            {% if error == 404 %}
+            {% if args['error'] == 404 %}
                 <p>Página no encontrada.</p>
-            {% elif error == 406 %}
+            {% elif args['error'] == 406 %}
                 <p>Error en la carga o entrada de datos.</p>
             {% else %}
                 <p>Error desconocido, intente luego.</p>

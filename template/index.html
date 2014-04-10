@@ -1,83 +1,91 @@
 {% extends "base.html" %}
     {% block content %}
-        {% if exito != None %}
-            {% if exito == True %}
-                <div class="exito">Hecho. Ya podés disfrutar tu bebida.</div>
-            {% elif exito == "Cierre" %}
+        {% if args['exito'] != None %}
+            {% if args['exito'] == True %}
+                <div class="exito">Ya podés disfrutar tu bebida, {{ args['usuario_compra'] }}.</div>
+            {% elif args['exito'] == "Cierre" %}
                 <div class="exito">Cierre de caja exitoso.</div>
-            {% elif exito == False %}
-                <div class="error">Error. Puede que no haya suficientes bebidas o que algo ande mal. Intente de nuevo.</div>
+            {% elif args['exito'] == False %}
+                {% if args['error'] == 'cantidad' %}
+                    <div class="error">No hay suficientes bebidas para realizar la compra.</div>
+                {% elif args['error'] == 'stock' %}
+                    <div class="error">No hay stock del producto seleccionado.</div>
+                {% elif args['error'] == 'pass' %}
+                    <div class="error">Contraseña incorrecta. Intente de nuevo.</div>
+                {% else %}
+                    <div class="error">Error desconocido. Si persiste, notifiqueselo al desarrollador.</div>
+                {% endif %}
             {% endif %}
         {% endif %}
 
-        <div class="sixteen columns header">
-            <h1>Drinklogger</h1>
+        <div class="uk-grid">
+            <div class="uk-width-1-1">
+                <h1>Drinklogger</h1>
+            </div>
         </div>
-            <div class="seven columns products">
-                <ul class="menu">
-                    <li><a href="javascript:mostrarPedidos();">Pedir</a></li>
-                    <li><a href="javascript:mostrarConsultas();">Consultas</a></li>
-                    <li><a href="/usuario/">Manejo de Usuarios</a></li>
-                    <li><a href="/admin/">Administración</a></li>
-                </ul>
-            </div>
-            <div id="main" class="seven columns">
-                <ul class="lista">
-                {% for producto in productos %}
-                    {% if producto.cant == 0 %}
-                        <li>{{ producto.nombre }} <span class="err">No hay</span></li>
-                    {% else %}
-                        <li>{{ producto.nombre }} <b>x{{ producto.cant }}</b></li>
-                    {% endif %}
-                {% endfor %}
-                </ul>
-            </div>
-            <div id="inventory" style="display:none;" class="seven columns">
-                <h2>Seleccionar</h2>
+        <div class="uk-grid">
+                <div class="uk-width-1-2">
+                    <ul class="menu">
+                        <li><a href="javascript:mostrarPedidos();">Pedir</a></li>
+                        <li><a href="javascript:mostrarConsultas();">Consultas</a></li>
+                        {% if args['auth'] %}
+                        <li><a href="/usuario/">Manejo de Usuarios</a></li>
+                        <li><a href="/admin/">Administración</a></li>
+                        {% else %}
+                        <li><a href="accounts/login/?next=%2Fadmin%2F">Loguearse</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div id="main" class="uk-width-1-2">
+                    <ul id="lista" class="lista"></ul>
+                </div>
+                <div id="inventory" style="display:none;" class="uk-width-1-2 uk-text-center">
+                    <h2>Seleccionar</h2>
 
-                <form method="POST" action="{{ url_for('consumo') }}">
-                <ul class="inv-menu">
-                    <li>
-                        <select id="productos" name="productos" onchange="admSelectCheck(this)">
-                            <option value="null" selected="selected">--------</option>
-                        {% for producto in productos %}
-                            {% if producto.cant > 0 %}
-                                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
-                            {% else %}
-                                <option value="{{ producto.id }}" disabled>{{ producto.nombre }}</option>
-                            {% endif %}
-                        {% endfor %}
-                        </select>
-                        <select id="cantidad" name="cantidad">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </li>
-                    <li id="persona">Usuario: <select id="personas" name="personas" onchange="enable(this)">
-                        <option value="0">------------</option>
-                        {% for usuario in usuarios %}
-                            <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
-                        {% endfor %}
-                    </select></li>
-                    <li id="pass">Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass"></li>
-                    <li><input id="enviar" type="submit" value="Enviar" disabled></li>
-                </ul>
-                </form>
-            </div>
-            <div id="consulta" style="display:none;" class="seven columns">
-                <h2>Consultas</h2>
+                    <form method="POST" action="{{ url_for('consumo') }}">
+                    <ul class="inv-menu">
+                        <li>
+                            <select id="productos" name="productos" onchange="admSelectCheck(this)">
+                                <option value="null" selected="selected">--------</option>
+                            {% for producto in args['productos'] %}
+                                {% if producto.cant > 0 %}
+                                    <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                                {% else %}
+                                    <option value="{{ producto.id }}" disabled>{{ producto.nombre }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            </select>
+                            <select id="cantidad" name="cantidad">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </li>
+                        <li id="persona">Usuario: <select id="personas" name="personas" onchange="enable(this)">
+                            <option value="0">------------</option>
+                            {% for usuario in args['usuarios'] %}
+                                <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
+                            {% endfor %}
+                        </select></li>
+                        <li id="pass">Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass"></li>
+                        <li><input class="uk-button" id="enviar" type="submit" value="Enviar" disabled></li>
+                    </ul>
+                    </form>
+                </div>
+                <div id="consulta" style="display:none;" class="uk-width-1-2">
+                    <h2>Consultas</h2>
 
-                <form method="POST" action="/consulta/">
-                    <p>Fecha: <input id="date" name="pasado" type="text" size="8" value="{{ semana_pasada }}" onclick="scwShow(this,event);" /> a <select id="fecha" onchange="cambioFecha(this)">
-                        <option value="0" selected>Hoy</option>
-                        <option value="1">Otra fecha</option>
-                    </select>
-                    <input input id="futuro" style="display:none;" name="futuro" type="text" size="8" onclick="scwShow(this,event);" />
-                    </p>
-                    <p><input type="submit" value="Consultar"></p>
-                </form>
-            </div>
+                    <form method="POST" action="/consulta/">
+                        <p>Fecha: <input id="date" name="pasado" type="text" size="8" value="{{ args['semana_pasada'] }}" onclick="scwShow(this,event);" /> a <select id="fecha" onchange="cambioFecha(this)">
+                            <option value="0" selected>Hoy</option>
+                            <option value="1">Otra fecha</option>
+                        </select>
+                        <input input id="futuro" style="display:none;" name="futuro" type="text" size="8" onclick="scwShow(this,event);" />
+                        </p>
+                        <p><input class="uk-button" type="submit" value="Consultar"></p>
+                    </form>
+                </div>
+        </div>
     {% endblock %}

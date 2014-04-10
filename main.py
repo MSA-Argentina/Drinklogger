@@ -4,6 +4,7 @@ import datetime
 from hashlib import md5
 from config import app
 from config import db
+from config import api
 from config import auth
 from database import *
 from admin import admin
@@ -16,7 +17,8 @@ from flask import url_for
 
 # Esto crea las vistas del admin tipo django
 admin.setup()
-
+# Y esto el API REST para el log de bebidas
+api.setup()
 
 @app.errorhandler(404)
 def pagNoEncontrada(error):
@@ -33,20 +35,27 @@ def home():
     productos = Producto.select()
     usuarios = Usuario.select()
     exito = None
+    admin = auth.get_logged_in_user()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
-    return render_template("index.html", productos=productos,
-                           usuarios=usuarios, semana_pasada=semana_pasada,
-                           exito=exito,)
+
+    args = {}
+    args['productos'] = productos
+    args['usuarios'] = usuarios
+    args['exito'] = None
+    args['auth'] = admin
+    args['semana_pasada'] = semana_pasada
+
+    return render_template("index.html", args=args,)
 
 
 @app.route("/mandar", methods=["POST", "GET"])
 def consumo():
-    productos = Producto.select()
     usuarios = Usuario.select()
     consumo = Consumo.select()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
+    get_usuario = Usuario.get(Usuario.id == request.form["personas"]).nombre
     get_pass = Usuario.get(Usuario.id == request.form["personas"]).password
     if (get_pass == md5(request.form["pass"]).hexdigest()):
         if (request.form["productos"] != "null"):
@@ -66,25 +75,25 @@ def consumo():
                     .where(Producto.id == request.form["productos"])
                 actualizar_cantidad.execute()
                 exito = True
-        # Mejorar este código
-                return render_template("index.html", productos=productos,
-                                       usuarios=usuarios, exito=exito,
-                                       semana_pasada=semana_pasada,)
+                error = None
             else:
                 exito = False
-                return render_template("index.html", productos=productos,
-                                       usuarios=usuarios, exito=exito,
-                                       semana_pasada=semana_pasada,)
+                error = 'cantidad'        
         else:
             exito = False
-            return render_template("index.html", productos=productos,
-                                   usuarios=usuarios, exito=exito,
-                                   semana_pasada=semana_pasada,)
+            error = 'stock'
     else:
         exito = False
-        return render_template("index.html", productos=productos,
-                               usuarios=usuarios, exito=exito,
-                               semana_pasada=semana_pasada,)
+        error = 'pass'
+
+    args = {}
+    args['usuarios'] = usuarios
+    args['usuario_compra'] = get_usuario
+    args['exito'] = exito
+    args['error'] = error
+    args['semana_pasada'] = semana_pasada
+
+    return render_template("index.html", args=args,)
 
 
 @app.route("/consulta/", methods=["POST"])
@@ -114,10 +123,11 @@ def consulta():
                 else:
                     arreglo_consumo[str(detalle.usuario.nombre)] \
                         += detalle.precio * detalle.cantidad
-            return render_template("consultas.html",
-                                   consumos=arreglo_consumo,
-                                   pasado=str(pasado),
-                                   futuro=str(futuro),)
+            args = {}
+            args['consumos'] = arreglo_consumo
+            args['pasado'] = str(pasado)
+            args['futuro'] = str(futuro)
+            return render_template("consultas.html", args=args,)
         else:
             abort(406)
     else:
@@ -141,9 +151,10 @@ def consulta_detalle(usuario, pasado, futuro):
                                            Consumo.precio,
                                            Consumo.fecha)\
                                  .order_by(Consumo.fecha.asc())
-        return render_template("detalle.html",
-                               usuario=usuario,
-                               detalles=usuario_detalle,)
+        args = {}
+        args['usuario'] = usuario
+        args['detalles'] = usuario_detalle
+        return render_template("detalle.html", args=args,)
     else:
         abort(406)
 
@@ -153,7 +164,6 @@ def cierre_consumos(pasado, futuro):
     if (pasado != "" and futuro != ""):
         productos = Producto.select()
         usuarios = Usuario.select()
-        exito = "Cierre"
         semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
         semana_pasada = semana_pasada.date()
 
@@ -162,9 +172,13 @@ def cierre_consumos(pasado, futuro):
                    & (Consumo.fecha <= futuro))
         cierre_usuario.execute()
 
-        return render_template("index.html",
-                               productos=productos, usuarios=usuarios,
-                               semana_pasada=semana_pasada, exito=exito,)
+        args = {}
+        args['productos'] = productos
+        args['usuarios'] = usuarios
+        args['exito'] = "Cierre"
+        args['semana_pasada'] = semana_pasada
+
+        return render_template("index.html", args=args,)
 
 
 @app.route("/usuario/")
