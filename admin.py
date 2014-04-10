@@ -26,7 +26,7 @@ class UsuarioAdmin(ModelAdmin):
     columns = ("nombre", "email",)
 
 class ProductoResource(RestResource):
-    exclude = ('id', 'desc',)
+    exclude = ('desc',)
 
 
 admin = Admin(app, auth, branding="Drinklogger")

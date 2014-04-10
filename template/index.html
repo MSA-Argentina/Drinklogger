@@ -63,23 +63,10 @@
                     <form class="uk-form-row" method="POST" action="{{ url_for('consumo') }}">
                     <ul class="uk-list uk-list-space inv-menu">
                         <li>
-                            <select id="productos" name="productos" onchange="admSelectCheck(this)">
-                                <option value="null" selected="selected">--------</option>
-                            {% for producto in args['productos'] %}
-                                {% if producto.cant > 0 %}
-                                    <option value="{{ producto.id }}">{{ producto.nombre }}</option>
-                                {% else %}
-                                    <option value="{{ producto.id }}" disabled>{{ producto.nombre }}</option>
-                                {% endif %}
-                            {% endfor %}
-                            </select>
+                            <select id="productos" name="productos" onchange="admSelectCheck(this)"></select>
                             <select id="cantidad" name="cantidad">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
+                                 <option value="1" selected="selected">1</option>
+                           </select>
                         </li>
                         <li id="persona">
                             Usuario: <select id="personas" name="personas" onchange="enable(this)">

@@ -103,6 +103,7 @@ def consumo():
 
 @app.route("/consulta/", methods=["POST"])
 def consulta():
+    admin = auth.get_logged_in_user()
     if (request.form["pasado"] != ""):
         from datetime import date
         anio, mes, dia = request.form["pasado"].split("-")
@@ -130,6 +131,7 @@ def consulta():
                         += detalle.precio * detalle.cantidad
             args = {}
             args['consumos'] = arreglo_consumo
+            args['auth'] = admin
             args['pasado'] = str(pasado)
             args['futuro'] = str(futuro)
             return render_template("consultas.html", args=args,)

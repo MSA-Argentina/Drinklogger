@@ -2,6 +2,8 @@ function mostrarPedidos() {
     main.style.display = "none";
     inventory.style.display = "inline-block";
     consulta.style.display = "none";
+
+    cargar_bebidas();
 }
 
 function mostrarConsultas() {
@@ -54,7 +56,7 @@ function enable(nameSelect) {
 
 function get_bebidas() {
     request = new XMLHttpRequest();
-    request.open('GET', '/api/producto/', true);
+    request.open('GET', '/api/producto/?ordering=id', true);
 
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
@@ -90,9 +92,52 @@ function refrescar_bebidas() {
     get_bebidas();
 }
 
+function cargar_bebidas() {
+    request = new XMLHttpRequest();
+    request.open('GET', '/api/producto/?ordering=id', true);
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            data = JSON.parse(request.responseText);
+            data = data['objects'];
+            var largo_de_lista = data.length;
+            opciones = document.getElementById('productos');
+            opciones.innerHTML = '';
+            // Elemento nulo
+            nulo = document.createElement('option');
+            nulo.value = "null";
+            nulo.innerHTML = "------------";
+            opciones.appendChild(nulo);
+            for (var i = 0; i < largo_de_lista; ++i) {
+                var nuevo_item = document.createElement('option');
+                if (data[i]['cant'] != 0) {
+                    nuevo_item.value = data[i]['id'];
+                    nuevo_item.innerHTML = data[i]['nombre'];
+                } else {
+                    nuevo_item.disabled = true;
+                    nuevo_item.innerHTML = data[i]['nombre'];
+                };
+                opciones.appendChild(nuevo_item);
+            }
+        } else {
+            return console.log('Error');
+        }
+    };
+
+    request.onerror = function() {
+        return alert('Error');
+    };
+
+    request.send();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     get_bebidas();
-    var refrescar = setInterval(function() {
+    var refrescar_stock = setInterval(function() {
         refrescar_bebidas()
+    }, 60000);
+    var refrescar_pedido = setInterval(function() {
+        cargar_bebidas()
     }, 60000);
 });
