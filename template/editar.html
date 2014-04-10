@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+    {% block content %}
+        <div class="uk-grid">
+            <div class="uk-grid-1-1">
+                <h2>Editar {{ usuario.nombre }}</h2>
+
+                <div class="uk-grid">
+                    <div class="uk-grid-1-2">
+                        <form method="POST" action="/usuario/editado/">
+                                    <p><input type="hidden" name="usuario_id" value="{{ usuario.id }}"></p>
+                                    <p><b>Nombre:</b> <input class="keyboardInput" type="text" name="nombre" value="{{ usuario.nombre }}"></p>
+                                    <p><b>Email:</b> <input class="keyboardInput" type="text" name="email" value="{{ usuario.email }}"></p>
+                                    <p><b>Contraseña:</b> <input class="keyboardInput" type="password" name="pass"></p>
+                                    <p><b>Repetir contraseña:</b> <input class="keyboardInput" type="password" name="pass2"></p>
+                                    <p><input class="uk-button uk-button-success uk-button-large" type="submit" value="Editar"></p>
+                        </form>
+                    </div>
+                    <div class="uk-grid-1-2">
+                        <a class="uk-button uk-button-primary" href="{{ url_for('manejo_usuario') }}">Volver atrás</a>
+                    </div>
+            </div>
+        </div>
+    {% endblock %}

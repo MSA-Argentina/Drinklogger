@@ -1,0 +1,47 @@
+body {
+    background: #FFF url(../img/agsquare.png) repeat;
+    font-size: 18px;
+}
+
+p {
+    text-align: justify;
+}
+
+option {
+    font-size: 20px;
+}
+
+select {
+    font-size: 16px;
+}
+
+.menu li, .lista li, .inv-menu li {
+    padding-bottom: 10px;
+}
+
+.err {
+    color: red;
+    font-weight: bold;
+}
+
+.menu, .inv-menu {
+    list-style: none;
+}
+
+.menu a {
+    color: #6D7AA4;
+    text-decoration: none;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* Fix for odd Mozilla border & padding issues */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+.inventory, #cantidad, #persona, #pass {
+    display: none;
+}

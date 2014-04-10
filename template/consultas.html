@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+    {% block content %}
+                <h2 class="uk-h2">Historial de consumos</h2>
+
+                <h4 class="uk-h4">De <b>{{ args['pasado'] }}</b> a <b>{{ args['futuro'] }}</b></h4>
+
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario, total in args['consumos'].items() %}
+                            <tr>
+                                <td>{{ usuario }}</td>
+                                <td>${{ total }}</td>
+                                <td><a class="uk-button uk-button-danger" href="/consulta/{{ usuario }}/{{ args['pasado'] }}-a-{{ args['futuro'] }}/">Detalle</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <a class="uk-button uk-button-primary" href="{{ url_for('home') }}">Volver atrás</a>
+                <a class="uk-button uk-button-success" href="/consulta/cierre/{{ args['pasado'] }}-a-{{ args['futuro'] }}/">Cierre de Caja</a>
+    {% endblock %}

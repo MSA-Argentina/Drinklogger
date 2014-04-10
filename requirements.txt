@@ -1,0 +1,9 @@
+Flask
+Jinja2
+Werkzeug
+flask-peewee
+itsdangerous
+peewee
+psycopg2
+six
+wsgiref

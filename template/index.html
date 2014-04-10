@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+    {% block content %}
+        {% if args['exito'] != None %}
+            {% if args['exito'] == True %}
+                <div class="uk-alert uk-alert-success">
+                    <a href="" class="uk-alert-close uk-close"></a>
+                    <p>Ya podés disfrutar tu bebida, {{ args['usuario_compra'] }}</p>
+                </div>
+            {% elif args['exito'] == "Cierre" %}
+                <div class="uk-alert uk-alert-success">
+                    <a href="" class="uk-alert-close uk-close"></a>
+                    <p>Cierre de caja exitoso.</p>
+                </div>
+            {% elif args['exito'] == False %}
+                {% if args['error'] == 'cantidad' %}
+                    <div class="uk-alert uk-alert-danger">
+                        <a href="" class="uk-alert-close uk-close"></a>
+                        <p>No hay suficientes bebidas para realizar la compra.</p>
+                    </div>
+                {% elif args['error'] == 'stock' %}
+                    <div class="uk-alert uk-alert-danger">
+                        <a href="" class="uk-alert-close uk-close"></a>
+                        <p>No hay stock del producto seleccionado.</p>
+                    </div>
+                {% elif args['error'] == 'pass' %}
+                    <div class="uk-alert uk-alert-danger">
+                        <a href="" class="uk-alert-close uk-close"></a>
+                        <p>Contraseña incorrecta. Intente de nuevo.</p>
+                    </div>
+                {% else %}
+                    <div class="uk-alert uk-alert-danger">
+                        <a href="" class="uk-alert-close uk-close"></a>
+                        <p>Error desconocido. Si persiste, notifiqueselo al desarrollador.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        <div class="uk-grid">
+            <div class="uk-width-1-1">
+                <h1 class="uk-h1 uk-text-center">Drinklogger</h1>
+            </div>
+        </div>
+        <div class="uk-grid uk-grid-preserve">
+                <div class="uk-width-1-2">
+                    <ul class="menu uk-list uk-list-space">
+                        <li><a href="javascript:mostrarPedidos();">Pedir</a></li>
+                        <li><a href="javascript:mostrarConsultas();">Consultas</a></li>
+                        {% if args['auth'] %}
+                        <li><a href="/usuario/">Manejo de Usuarios</a></li>
+                        <li><a href="/admin/">Administración</a></li>
+                        {% else %}
+                        <li><a href="accounts/login/?next=%2Fadmin%2F">Loguearse</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div id="main" class="uk-width-1-2">
+                    <ul id="lista" class="lista"></ul>
+                </div>
+                <div id="inventory" style="display:none;" class="uk-width-1-2">
+                    <h2>Seleccionar</h2>
+
+                    <form class="uk-form-row" method="POST" action="{{ url_for('consumo') }}">
+                    <ul class="uk-list uk-list-space inv-menu">
+                        <li>
+                            <select id="productos" name="productos" onchange="admSelectCheck(this)">
+                                <option value="null" selected="selected">--------</option>
+                            {% for producto in args['productos'] %}
+                                {% if producto.cant > 0 %}
+                                    <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                                {% else %}
+                                    <option value="{{ producto.id }}" disabled>{{ producto.nombre }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            </select>
+                            <select id="cantidad" name="cantidad">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </li>
+                        <li id="persona">
+                            Usuario: <select id="personas" name="personas" onchange="enable(this)">
+                                <option value="0">------------</option>
+                                {% for usuario in args['usuarios'] %}
+                                    <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </li>
+                        <li id="pass">
+                            Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass">
+                        </li>
+                        <li><input class="uk-button uk-button-primary uk-button-large" id="enviar" type="submit" value="Enviar" disabled></li>
+                    </ul>
+                    </form>
+                </div>
+                <div id="consulta" style="display:none;" class="uk-width-1-2">
+                    <h2>Consultas</h2>
+
+                    <form class="uk-form" method="POST" action="/consulta/">
+                        <p>Fecha: <input id="date" name="pasado" type="text" size="8" value="{{ args['semana_pasada'] }}" onclick="scwShow(this,event);" /> a <select id="fecha" onchange="cambioFecha(this)">
+                            <option value="0" selected>Hoy</option>
+                            <option value="1">Otra fecha</option>
+                        </select>
+                        <input input id="futuro" style="display:none;" name="futuro" type="text" size="8" onclick="scwShow(this,event);" />
+                        </p>
+                        <p><input class="uk-button uk-button-primary uk-button-large" type="submit" value="Consultar"></p>
+                    </form>
+                </div>
+        </div>
+    {% endblock %}
