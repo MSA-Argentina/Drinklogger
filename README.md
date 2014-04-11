@@ -67,6 +67,18 @@ En **Windows** usar [el instalador gráfico](http://stickpeople.com/projects/pyt
 
 Sí, ambos son soportados. Pero en vez de **psycopg2** tiene que instalar **pysqlite** para _SQLite_ y **mysql-connector-repackaged** en _MySQL_.
 
+### ¿Cómo creo un usuario para la administración?
+
+Para crear un usuario **admin** default necesitan correr este código python desde la línea de comando o mismo desde el _____main_____
+
+    from config import auth
+    auth.User.create_table(fail_silently=True)  # make sure table created.
+    admin = auth.User(username='admin', email='', admin=True, active=True)
+    admin.set_password('admin')
+    admin.save()
+
+Una vez corrido, pueden entrar como usuario **admin** y password **admin**. Es recomendable cambiar esto.
+
 ### ¿Cómo puedo contribuír?
 
 * Forkeá
