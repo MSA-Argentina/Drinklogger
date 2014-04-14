@@ -1,7 +1,7 @@
 Flask
 Jinja2
 Werkzeug
-flask-peewee
+-e git://github.com/DoctorMalboro/flask-peewee.git#egg=Flask-Peewee
 itsdangerous
 peewee
 psycopg2

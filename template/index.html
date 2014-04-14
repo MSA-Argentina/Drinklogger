@@ -2,7 +2,37 @@
     {% block content %}
         <div class="uk-grid">
             <div class="uk-width-1-1">
+                {% if args['exito'] == 'True' %}
+                        <div class="uk-alert uk-alert-success" data-uk-alert>
+                            <a href="#" class="uk-alert-close uk-close"></a>
+                            <p>Operación realizada.</p>
+                        </div>
+                {% elif args['exito'] == 'False' %}
+                    {% if args['error'] == 'cantidad' %}
+                        <div class="uk-alert uk-alert-danger" data-uk-alert>
+                            <a href="#" class="uk-alert-close uk-close"></a>
+                            <p>No hay la cantidad pedida del producto.</p>
+                        </div>
+                    {% elif args['error'] == 'stock' %}
+                        <div class="uk-alert uk-alert-danger" data-uk-alert>
+                            <a href="#" class="uk-alert-close uk-close"></a>
+                            <p>El producto no está en stock.</p>
+                        </div>
+                    {% elif args['error'] == 'pass' %}
+                        <div class="uk-alert uk-alert-danger" data-uk-alert>
+                            <a href="#" class="uk-alert-close uk-close"></a>
+                            <p>Contraseña incorrecta.</p>
+                        </div>
+                    {% else %}
+                        <div class="uk-alert uk-alert-danger" data-uk-alert>
+                            <a href="#" class="uk-alert-close uk-close"></a>
+                            <p>Error desconocido</p>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
                 <h1 class="uk-h1 uk-text-center">Drinklogger</h1>
+                <h2></h2>
             </div>
         </div>
         <div class="uk-grid uk-grid-preserve">

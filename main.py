@@ -34,11 +34,12 @@ def pagErrorValores(error):
     args['error'] = error.code
     return render_template("error.html", args=args,)
 
-@app.route("/")
-def home():
+@app.route("/", methods=["GET"])
+@app.route("/?exito=<exito>", methods=["GET"])
+@app.route("/?exito=<exito>&error=<error>", methods=["GET"])
+def home(exito=None, error=None):
     productos = Producto.select()
     usuarios = Usuario.select()
-    exito = None
     admin = auth.get_logged_in_user()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
@@ -46,7 +47,14 @@ def home():
     args = {}
     args['productos'] = productos
     args['usuarios'] = usuarios
-    args['exito'] = None
+    if request.method == 'GET':
+        print request.args.get('exito')
+        args['exito'] = request.args.get('exito')
+    print "Método de request: ", request.method
+    if (args['exito'] == None):
+        args['error'] = None
+    else:
+        args['error'] = request.args.get('error')
     args['auth'] = admin
     args['semana_pasada'] = semana_pasada
 
@@ -95,13 +103,10 @@ def consumo():
 
     # Si es exitoso, te redirije al inicio
     if (exito):
-        return redirect(url_for('home'))
+        return redirect('?exito=%s' % exito)
     # Sino, devuelve un error
     else:
-        args = {}
-        args['error'] = error
-        return render_template('error.html', args=args)
-
+        return redirect('?exito=%s&error=%s' % (exito, error))
 
 @app.route("/consulta/", methods=["POST"])
 def consulta():
@@ -181,13 +186,7 @@ def cierre_consumos(pasado, futuro):
                    & (Consumo.fecha <= futuro))
         cierre_usuario.execute()
 
-        args = {}
-        args['productos'] = productos
-        args['usuarios'] = usuarios
-        args['exito'] = "Cierre"
-        args['semana_pasada'] = semana_pasada
-
-        return render_template("index.html", args=args,)
+        return redirect(url_for('.home', exito=True, cierre=True,))
 
 
 @app.route("/usuario/")
