@@ -1,13 +1,19 @@
 {% extends "base.html" %}
     {% block content %}
-        <div class="sixteen columns">
+        <div class="uk-width-1-1">
 
-            <h2>Error {{ args['error'] }}</h2>
+            <h1>Error</h1>
 
             {% if args['error'] == 404 %}
                 <p>Página no encontrada.</p>
             {% elif args['error'] == 406 %}
                 <p>Error en la carga o entrada de datos.</p>
+            {% elif args['error'] == 'cantidad' %}
+                <p>La bebida solicitada no tiene la cantidad solicitada de productos.</p>
+            {% elif args['error'] == 'stock' %}
+                <p>No hay stock de la bebida solicitada.</p>
+            {% elif args['error'] == 'pass' %}
+                <p>Contraseña incorrecta.</p>
             {% else %}
                 <p>Error desconocido, intente luego.</p>
             {% endif %}

@@ -12,6 +12,12 @@ function mostrarConsultas() {
     inventory.style.display = "none";
 }
 
+function aStock() {
+    main.style.display = "inline-block";
+    consulta.style.display = "none";
+    inventory.style.display = "none";
+}
+
 var firstCheck = false;
 
 function admSelectCheck(nameSelect) {
@@ -75,12 +81,12 @@ function get_bebidas() {
                 ul.appendChild(nuevo_item);
             }
         } else {
-            return console.log('Error');
+            return console.log('Error de conexión');
         }
     };
 
     request.onerror = function() {
-        return alert('Error');
+        return alert('Error de solicitud');
     };
 
     request.send();
@@ -136,8 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
     get_bebidas();
     var refrescar_stock = setInterval(function() {
         refrescar_bebidas()
-    }, 60000);
+    }, 30000);
     var refrescar_pedido = setInterval(function() {
         cargar_bebidas()
-    }, 60000);
+    }, 300000);
 });

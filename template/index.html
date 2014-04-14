@@ -1,41 +1,5 @@
 {% extends "base.html" %}
     {% block content %}
-        {% if args['exito'] != None %}
-            {% if args['exito'] == True %}
-                <div class="uk-alert uk-alert-success">
-                    <a href="" class="uk-alert-close uk-close"></a>
-                    <p>Ya podés disfrutar tu bebida, {{ args['usuario_compra'] }}</p>
-                </div>
-            {% elif args['exito'] == "Cierre" %}
-                <div class="uk-alert uk-alert-success">
-                    <a href="" class="uk-alert-close uk-close"></a>
-                    <p>Cierre de caja exitoso.</p>
-                </div>
-            {% elif args['exito'] == False %}
-                {% if args['error'] == 'cantidad' %}
-                    <div class="uk-alert uk-alert-danger">
-                        <a href="" class="uk-alert-close uk-close"></a>
-                        <p>No hay suficientes bebidas para realizar la compra.</p>
-                    </div>
-                {% elif args['error'] == 'stock' %}
-                    <div class="uk-alert uk-alert-danger">
-                        <a href="" class="uk-alert-close uk-close"></a>
-                        <p>No hay stock del producto seleccionado.</p>
-                    </div>
-                {% elif args['error'] == 'pass' %}
-                    <div class="uk-alert uk-alert-danger">
-                        <a href="" class="uk-alert-close uk-close"></a>
-                        <p>Contraseña incorrecta. Intente de nuevo.</p>
-                    </div>
-                {% else %}
-                    <div class="uk-alert uk-alert-danger">
-                        <a href="" class="uk-alert-close uk-close"></a>
-                        <p>Error desconocido. Si persiste, notifiqueselo al desarrollador.</p>
-                    </div>
-                {% endif %}
-            {% endif %}
-        {% endif %}
-
         <div class="uk-grid">
             <div class="uk-width-1-1">
                 <h1 class="uk-h1 uk-text-center">Drinklogger</h1>
@@ -79,7 +43,10 @@
                         <li id="pass">
                             Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass">
                         </li>
-                        <li><input class="uk-button uk-button-primary uk-button-large" id="enviar" type="submit" value="Enviar" disabled></li>
+                        <li>
+                            <input class="uk-button uk-button-primary uk-button-large" id="enviar" type="submit" value="Enviar" disabled>
+                            <a class="uk-button uk-button-success uk-button-large" href="javascript:aStock();">Volver Atrás</a>
+                        </li>
                     </ul>
                     </form>
                 </div>
@@ -93,7 +60,7 @@
                         </select>
                         <input input id="futuro" style="display:none;" name="futuro" type="text" size="8" onclick="scwShow(this,event);" />
                         </p>
-                        <p><input class="uk-button uk-button-primary uk-button-large" type="submit" value="Consultar"></p>
+                        <p><input class="uk-button uk-button-primary uk-button-large" type="submit" value="Consultar"><a style="margin-left:10px;" class="uk-button uk-button-success uk-button-large" href="javascript:aStock();">Volver Atrás</a></p> <!-- A futuro: borrar el margin-left -->
                     </form>
                 </div>
         </div>

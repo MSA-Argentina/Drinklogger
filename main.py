@@ -23,13 +23,16 @@ api.setup()
 # Errores genéricos
 @app.errorhandler(404)
 def pagNoEncontrada(error):
-    return render_template("error.html", error=error.code)
+    args = {}
+    args['error'] = error.code
+    return render_template("error.html", args=args,)
 
 
 @app.errorhandler(406)
 def pagErrorValores(error):
-    return render_template("error.html", error=error.code)
-
+    args = {}
+    args['error'] = error.code
+    return render_template("error.html", args=args,)
 
 @app.route("/")
 def home():
@@ -60,7 +63,7 @@ def consumo():
     semana_pasada = semana_pasada.date()
     get_usuario = Usuario.get(Usuario.id == request.form["personas"]).nombre
     get_pass = Usuario.get(Usuario.id == request.form["personas"]).password
-    if (get_pass == md5(request.form["pass"]).hexdigest()):
+    if (get_pass == md5(request.form["pass"].encode("utf-8")).hexdigest()):
         if (request.form["productos"] != "null"):
             cantidad_actual = Producto\
                 .get(Producto.id == request.form["productos"]).cant
@@ -71,7 +74,8 @@ def consumo():
                 consumo.usuario = request.form["personas"]
                 consumo.producto = request.form["productos"]
                 consumo.precio = Producto.select()\
-                    .where(Producto.id == request.form["productos"]).get().precio
+                    .where(Producto.id == request.form["productos"])\
+                    .get().precio
                 consumo.cantidad = request.form["cantidad"]
                 consumo.save()
                 actualizar_cantidad = Producto.update(cant=cantidad_nueva)\
@@ -89,16 +93,12 @@ def consumo():
         exito = False
         error = 'pass'
 
-    args = {}
-    args['productos'] = productos
-    args['usuarios'] = usuarios
-    args['usuario_compra'] = get_usuario
-    args['auth'] = admin
-    args['exito'] = exito
-    args['error'] = error
-    args['semana_pasada'] = semana_pasada
-
-    return render_template("index.html", args=args,)
+    if (exito):
+        return redirect(url_for('home'))
+    else:
+        args = {}
+        args['error'] = error
+        return render_template('error.html', args=args)
 
 
 @app.route("/consulta/", methods=["POST"])
@@ -208,7 +208,8 @@ def crear_usuario():
             Usuario.create(
                 nombre=request.form["nombre"],
                 email=request.form["email"],
-                password=md5(request.form["pass"]).hexdigest(),
+                password=md5(request.form["pass"]\
+                         .encode("utf-8")).hexdigest(),
             )
             return redirect(url_for("manejo_usuario"))
 
@@ -231,8 +232,8 @@ def edito_usuario():
                                .where(Usuario.id == request.form["usuario_id"])
             act_usuario.execute()
         else:
-            passwd = md5(request.form["pass"]).hexdigest()
-            passwd2 = md5(request.form["pass2"]).hexdigest()
+            passwd = md5(request.form["pass"].encode("utf-8")).hexdigest()
+            passwd2 = md5(request.form["pass2"].encode("utf-8")).hexdigest()
             if (passwd == passwd2):
                 act_usuario = Usuario.update(nombre=request.form["nombre"],
                                        email=request.form["email"],
