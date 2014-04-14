@@ -93,8 +93,10 @@ def consumo():
         exito = False
         error = 'pass'
 
+    # Si es exitoso, te redirije al inicio
     if (exito):
         return redirect(url_for('home'))
+    # Sino, devuelve un error
     else:
         args = {}
         args['error'] = error
