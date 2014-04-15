@@ -132,9 +132,7 @@ def consulta():
             futuro = date(int(anio), int(mes), int(dia))
         if (pasado <= futuro):
             arreglo_consumo = {}
-            consumo_semanal = Consumo.select(Consumo.precio,
-                                             Consumo.cantidad,
-                                             Consumo.usuario,)\
+            consumo_semanal = Consumo.select()\
                 .where((Consumo.fecha >= pasado)
                        & (Consumo.fecha <= futuro)
                        & (Consumo.activo == True))
