@@ -165,7 +165,8 @@ def consulta_detalle(usuario, pasado, futuro):
         usuario_detalle = Consumo.select()\
                                  .where((Consumo.usuario == usuario_id)
                                         & (Consumo.fecha >= pasado)
-                                        & (Consumo.fecha <= futuro))\
+                                        & (Consumo.fecha <= futuro)
+                                        & (Consumo.activo == True))\
                                  .order_by(Consumo.fecha.asc())
         args = {}
         args['usuario'] = usuario
