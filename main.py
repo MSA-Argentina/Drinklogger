@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Imports
 import datetime
+import logging
 from hashlib import md5
 from config import app
 from config import db
@@ -14,6 +15,10 @@ from flask import request
 from flask import redirect
 from flask import url_for
 
+
+logging.basicConfig(filename='drinklogger.log', level=logging.INFO)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 # Esto crea las vistas del admin tipo django
 admin.setup()
@@ -48,9 +53,7 @@ def home(exito=None, error=None):
     args['productos'] = productos
     args['usuarios'] = usuarios
     if request.method == 'GET':
-        print request.args.get('exito')
         args['exito'] = request.args.get('exito')
-    print "Método de request: ", request.method
     if (args['exito'] == None):
         args['error'] = None
     else:
@@ -75,7 +78,7 @@ def consumo():
         if (request.form["productos"] != "null"):
             cantidad_actual = Producto\
                 .get(Producto.id == request.form["productos"]).cant
-            if (request.form["cantidad"] > cantidad_actual):
+            if (request.form["cantidad"] < cantidad_actual):
                 cantidad_nueva = cantidad_actual - \
                     int(request.form["cantidad"])
                 consumo = Consumo()
@@ -91,15 +94,22 @@ def consumo():
                 actualizar_cantidad.execute()
                 exito = True
                 error = None
+                logging.info('Compra exitosa: Usuario: %s - Producto: %s - Cantidad: %s - Fecha: %s' % (get_usuario,
+                                                 request.form['productos'],
+                                                 request.form['cantidad'],
+                                                 datetime.datetime.now()))
             else:
                 exito = False
-                error = 'cantidad'        
+                error = 'cantidad'
+                logging.warning('Error de cantidad: Usuario %s' % (get_usuario.encode('utf-8')))
         else:
             exito = False
             error = 'stock'
+            logging.warning('Error de stock: Usuario %s' % (get_usuario.encode('utf-8')))
     else:
         exito = False
         error = 'pass'
+        logging.warning('Error de contraseña: Usuario: %s' % (get_usuario.encode('utf-8')))
 
     # Si es exitoso, te redirije al inicio
     if (exito):
@@ -152,18 +162,10 @@ def consulta():
 def consulta_detalle(usuario, pasado, futuro):
     if (usuario != "" and pasado != "" and futuro != ""):
         usuario_id = Usuario.get(Usuario.nombre == usuario).id
-        usuario_detalle = Consumo.select(Consumo.producto,
-                                         fn.Sum(Consumo.cantidad)
-                                         .alias("cantidad"),
-                                         Consumo.precio,
-                                         Consumo.fecha)\
+        usuario_detalle = Consumo.select()\
                                  .where((Consumo.usuario == usuario_id)
                                         & (Consumo.fecha >= pasado)
                                         & (Consumo.fecha <= futuro))\
-                                 .group_by(Consumo.producto,
-                                           Consumo.cantidad,
-                                           Consumo.precio,
-                                           Consumo.fecha)\
                                  .order_by(Consumo.fecha.asc())
         args = {}
         args['usuario'] = usuario
@@ -186,7 +188,11 @@ def cierre_consumos(pasado, futuro):
                    & (Consumo.fecha <= futuro))
         cierre_usuario.execute()
 
-        return redirect(url_for('.home', exito=True, cierre=True,))
+        logging.info('Cierre de Caja: De %s a %s - Fecha: %s' % (pasado,
+                                         futuro,
+                                         datetime.datetime.now()))
+
+        return redirect('/?exito=True')
 
 
 @app.route("/usuario/")
@@ -212,6 +218,10 @@ def crear_usuario():
                 password=md5(request.form["pass"]\
                          .encode("utf-8")).hexdigest(),
             )
+            logging.info('Creación de Usuario: Nombre: %s - Fecha: %s' % (
+                                             request.form['nombre']\
+                                             .encode('utf-8'),
+                                             datetime.datetime.now()))
             return redirect(url_for("manejo_usuario"))
 
 
@@ -241,6 +251,10 @@ def edito_usuario():
                                        password=passwd,)\
                                    .where(Usuario.id == request.form["usuario_id"])
                 act_usuario.execute()
+        logging.info('Edición de Usuario: Id de usuario: %s - Fecha: %s' % (
+                                         request.form["usuario_id"]\
+                                         .encode('utf-8'),
+                                         datetime.datetime.now()))
         return redirect(url_for("manejo_usuario"))
 
 
@@ -249,6 +263,9 @@ def elimino_usuario(usuario_id):
     if (usuario_id != "" and usuario_id.isdigit()):
         usuario_eliminar = Usuario.get(Usuario.id == usuario_id)
         usuario_eliminar.delete_instance()
+        logging.info('Eliminación de Usuario: Id de usuario: %s - Fecha: %s' % (
+                                         usuario_id.encode('utf-8'),
+                                         datetime.datetime.now()))
         return redirect(url_for("manejo_usuario"))
 
 
