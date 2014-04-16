@@ -2,6 +2,11 @@ function mostrarPedidos() {
     main.style.display = "none";
     inventory.style.display = "inline-block";
     consulta.style.display = "none";
+    $("#checklogin").hide();
+    $('#password').val('');
+    $('#personas').val('');
+    $('#add_err').removeClass('uk-alert-warning uk-alert uk-alert-success');
+    $('#add_err').html(''); 
 
     cargar_bebidas();
 }
@@ -25,17 +30,18 @@ function admSelectCheck(nameSelect) {
         admOptionValue = nameSelect.value;
         if (admOptionValue != "null") {
             cantidad.style.display = "inline-block";
-            persona.style.display = "block";
-            pass.style.display = "block";
+            $("#persona").show();
+            $("#pass").show();
+            $("#checklogin").show();
             firstCheck = true;
         } else {
             cantidad.style.display = "none";
-            persona.style.display = "none";
-            pass.style.display = "none";
+            $("#persona").show();
+            $("#pass").show();
             document.getElementById("personas").selectedIndex = 0;
             document.getElementById("personas").value = 0;
             document.getElementById("password").value = "";
-            document.getElementById("enviar").disabled = true;
+            $("#checklogin").hide();
             firstCheck = false;
         }
     }
@@ -54,9 +60,9 @@ function cambioFecha(nameSelect) {
 function enable(nameSelect) {
     admOptionValue = nameSelect.value;
     if ((admOptionValue != 0) && (firstCheck == true)) {
-        document.getElementById("enviar").disabled = false;
+        $("#checklogin").show();
     } else {
-        document.getElementById("enviar").disabled = true;
+        $("#checklogin").hide();
     };
 }
 
@@ -146,4 +152,34 @@ document.addEventListener('DOMContentLoaded', function() {
     var refrescar_pedido = setInterval(function() {
         cargar_bebidas()
     }, 300000);
+});
+
+$(document).ready(function(){
+    $("#checklogin").click(function(){
+        personas = $("#personas").val();
+        pass = $("#password").val();
+        producto = $("#productos").val();
+        cant = $("#cantidad").val();
+        if(pass != '' && personas > 0 && producto > 0){
+            $.ajax({
+                type: "POST",
+                encoding:"UTF-8",
+                url: "checklogin?"+"personas="+personas+"&pass="+encodeURIComponent(pass)+"&productos="+producto+"&cantidad="+cant,
+                success: function(html){   
+                    //alert(JSON.stringify(html));
+                    var obj = jQuery.parseJSON( JSON.stringify(html) );
+                    $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
+                    $('#add_err').html(obj.MSG);
+                    $('#password').val('');
+                },
+                beforeSend:function(){
+                    $("#add_err").html("Cargando Datos...");
+                }
+            });
+        }else{
+            $('#add_err').html('Completar todos los campos para realizar el pedido');
+            $('#add_err').addClass( 'uk-alert uk-alert-warning' );
+        }
+        return false;
+    });
 });

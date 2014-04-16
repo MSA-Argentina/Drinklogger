@@ -14,7 +14,7 @@ from flask import render_template
 from flask import request
 from flask import redirect
 from flask import url_for
-
+from flask import jsonify
 
 logging.basicConfig(filename='drinklogger.log', level=logging.INFO)
 log = logging.getLogger('werkzeug')
@@ -40,8 +40,6 @@ def pagErrorValores(error):
     return render_template("error.html", args=args,)
 
 @app.route("/", methods=["GET"])
-@app.route("/?exito=<exito>", methods=["GET"])
-@app.route("/?exito=<exito>&error=<error>", methods=["GET"])
 def home(exito=None, error=None):
     productos = Producto.select()
     usuarios = Usuario.select()
@@ -52,71 +50,69 @@ def home(exito=None, error=None):
     args = {}
     args['productos'] = productos
     args['usuarios'] = usuarios
-    if request.method == 'GET':
-        args['exito'] = request.args.get('exito')
-    if (args['exito'] == None):
-        args['error'] = None
-    else:
-        args['error'] = request.args.get('error')
     args['auth'] = admin
     args['semana_pasada'] = semana_pasada
 
     return render_template("index.html", args=args,)
 
-
-@app.route("/mandar", methods=["POST", "GET"])
-def consumo():
+@app.route("/checklogin", methods=["POST", "GET"])
+def checklogin():
     usuarios = Usuario.select()
     consumo = Consumo.select()
     productos = Producto.select()
     admin = auth.get_logged_in_user()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
-    get_usuario = Usuario.get(Usuario.id == request.form["personas"]).nombre
-    get_pass = Usuario.get(Usuario.id == request.form["personas"]).password
-    if (get_pass == md5(request.form["pass"].encode("utf-8")).hexdigest()):
-        if (request.form["productos"] != "null"):
-            cantidad_actual = Producto\
-                .get(Producto.id == request.form["productos"]).cant
-            if ((cantidad_actual > 0) and (request.form["cantidad"] > cantidad_actual)):
+
+    get_usuario = Usuario.get(Usuario.id == request.args.get('personas')).nombre
+    get_pass = Usuario.get(Usuario.id == request.args.get('personas')).password
+
+    if (get_pass == md5(request.args.get('pass').encode('utf-8')).hexdigest()):
+        if (request.args.get('productos') != "null"):
+            cantidad_actual = Producto.get(Producto.id == request.args.get('productos')).cant
+            if((cantidad_actual > 0) and (int(request.args.get('cantidad')) >= cantidad_actual)):
+
                 cantidad_nueva = cantidad_actual - \
-                    int(request.form["cantidad"])
+                    int(request.args.get('cantidad'))
                 consumo = Consumo()
-                consumo.usuario = request.form["personas"]
-                consumo.producto = request.form["productos"]
+                consumo.usuario = request.args.get('personas')
+                consumo.producto = request.args.get('productos')
                 consumo.precio = Producto.select()\
-                    .where(Producto.id == request.form["productos"])\
+                    .where(Producto.id == request.args.get('productos'))\
                     .get().precio
-                consumo.cantidad = request.form["cantidad"]
+                consumo.cantidad = request.args.get('cantidad')
                 consumo.save()
                 actualizar_cantidad = Producto.update(cant=cantidad_nueva)\
-                    .where(Producto.id == request.form["productos"])
+                    .where(Producto.id == request.args.get('productos'))
                 actualizar_cantidad.execute()
-                exito = True
-                error = None
+
+                msg = 'Ya podés disfrutar tu bebida'
+                msg_uk = 'uk-alert uk-alert-success'
                 logging.info('Compra exitosa: Usuario: %s - Producto: %s - Cantidad: %s - Fecha: %s' % (get_usuario,
-                                                 request.form['productos'],
-                                                 request.form['cantidad'],
-                                                 datetime.datetime.now()))
+                                             request.args.get('productos'),
+                                             request.args.get('cantidad'),
+                                             datetime.datetime.now()))
             else:
-                exito = False
-                error = 'cantidad'
+                msg = 'No hay productos en stock, intente con otro :)'
+                msg_uk = 'uk-alert uk-alert-warning'
                 logging.warning('Error de cantidad: Usuario %s' % (get_usuario.encode('utf-8')))
         else:
-            exito = False
-            error = 'stock'
+            msg = 'Error de Stock, selecione otro producto'
+            msg_uk = 'uk-alert uk-alert-warning'
             logging.warning('Error de stock: Usuario %s' % (get_usuario.encode('utf-8')))
     else:
-        exito = False
-        error = 'pass'
+        msg = 'Contraseña incorrecta. Intente de nuevo'
+        msg_uk = 'uk-alert uk-alert-warning'
         logging.warning('Error de contraseña: Usuario: %s' % (get_usuario.encode('utf-8')))
 
-    # Si es exitoso, te redirije al inicio
-    if (exito):
-        return redirect('?exito=%s' % exito)
-    # Sino, devuelve un error
-    else:
-        return redirect('?exito=%s&error=%s' % (exito, error))
+
+    ret_data = {"productos": request.args.get('productos'), 
+                "cantidad":request.args.get('cantidad'),
+                "MSG":msg,
+                "MSGUK":msg_uk
+                }
+
+    return jsonify(ret_data);
 
 @app.route("/consulta/", methods=["POST"])
 def consulta():
@@ -136,6 +132,7 @@ def consulta():
                 .where((Consumo.fecha >= pasado)
                        & (Consumo.fecha <= futuro)
                        & (Consumo.activo == True))
+            #print consumo_semanal
             # Mejorar este código
             for detalle in consumo_semanal:
                 if str(detalle.usuario.nombre) not in arreglo_consumo:

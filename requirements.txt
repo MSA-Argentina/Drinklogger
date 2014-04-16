@@ -1,9 +1,10 @@
 Flask
 Jinja2
 Werkzeug
--e git://github.com/DoctorMalboro/flask-peewee.git#egg=Flask-Peewee
+-e git+https://github.com/DoctorMalboro/flask-peewee.git#egg=Flask-Peewee
 itsdangerous
 peewee
 psycopg2
 six
 wsgiref
+jsonify

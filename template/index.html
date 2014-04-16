@@ -2,35 +2,6 @@
     {% block content %}
         <div class="uk-grid">
             <div class="uk-width-1-1">
-                {% if args['exito'] == 'True' %}
-                        <div class="uk-alert uk-alert-success" data-uk-alert>
-                            <a href="#" class="uk-alert-close uk-close"></a>
-                            <p>Operación realizada.</p>
-                        </div>
-                {% elif args['exito'] == 'False' %}
-                    {% if args['error'] == 'cantidad' %}
-                        <div class="uk-alert uk-alert-danger" data-uk-alert>
-                            <a href="#" class="uk-alert-close uk-close"></a>
-                            <p>No hay la cantidad pedida del producto.</p>
-                        </div>
-                    {% elif args['error'] == 'stock' %}
-                        <div class="uk-alert uk-alert-danger" data-uk-alert>
-                            <a href="#" class="uk-alert-close uk-close"></a>
-                            <p>El producto no está en stock.</p>
-                        </div>
-                    {% elif args['error'] == 'pass' %}
-                        <div class="uk-alert uk-alert-danger" data-uk-alert>
-                            <a href="#" class="uk-alert-close uk-close"></a>
-                            <p>Contraseña incorrecta.</p>
-                        </div>
-                    {% else %}
-                        <div class="uk-alert uk-alert-danger" data-uk-alert>
-                            <a href="#" class="uk-alert-close uk-close"></a>
-                            <p>Error desconocido</p>
-                        </div>
-                    {% endif %}
-                {% endif %}
-
                 <h1 class="uk-h1 uk-text-center">Drinklogger</h1>
                 <h2></h2>
             </div>
@@ -54,7 +25,7 @@
                 <div id="inventory" style="display:none;" class="uk-width-1-2">
                     <h2>Seleccionar</h2>
 
-                    <form class="uk-form-row" method="POST" action="{{ url_for('consumo') }}">
+                    <form class="uk-form-row" method="POST">
                     <ul class="uk-list uk-list-space inv-menu">
                         <li>
                             <select id="productos" name="productos" onchange="admSelectCheck(this)"></select>
@@ -73,8 +44,14 @@
                         <li id="pass">
                             Contraseña: <input id="password" class="keyboardInput" size="10" type="password" name="pass">
                         </li>
+
+                        <div id="add_err" stye="display:none">
+                        </div>
                         <li>
-                            <input class="uk-button uk-button-primary uk-button-large" id="enviar" type="submit" value="Enviar" disabled>
+                            <input class="uk-button uk-button-primary uk-button-large" id="checklogin" type="button" value="Enviar Pedido" >
+                        </li>
+
+                        <li>
                             <a class="uk-button uk-button-success uk-button-large" href="#" onClick="aStock();">Volver Atrás</a>
                         </li>
                     </ul>
