@@ -70,7 +70,7 @@ def checklogin():
     if (get_pass == md5(request.args.get('pass').encode('utf-8')).hexdigest()):
         if (request.args.get('productos') != "null"):
             cantidad_actual = Producto.get(Producto.id == request.args.get('productos')).cant
-            if((cantidad_actual > 0) and (int(request.args.get('cantidad')) >= cantidad_actual)):
+            if((cantidad_actual > 0) and (int(request.args.get('cantidad')) <= cantidad_actual)):
 
                 cantidad_nueva = cantidad_actual - \
                     int(request.args.get('cantidad'))
@@ -128,19 +128,18 @@ def consulta():
             futuro = date(int(anio), int(mes), int(dia))
         if (pasado <= futuro):
             arreglo_consumo = {}
-            consumo_semanal = Consumo.select()\
-                .where((Consumo.fecha >= pasado)
+
+            consumo_semanal = (Consumo.select(
+                Usuario.nombre,
+                fn.sum(Consumo.precio*Consumo.cantidad).alias('total')
+                ).join(Usuario
+                    ).where((Consumo.fecha >= pasado)
                        & (Consumo.fecha <= futuro)
-                       & (Consumo.activo == True))
-            #print consumo_semanal
-            # Mejorar este código
-            for detalle in consumo_semanal:
-                if str(detalle.usuario.nombre) not in arreglo_consumo:
-                    arreglo_consumo[str(detalle.usuario.nombre)] \
-                        = detalle.precio * detalle.cantidad
-                else:
-                    arreglo_consumo[str(detalle.usuario.nombre)] \
-                        += detalle.precio * detalle.cantidad
+                       & (Consumo.activo == True)).group_by(Usuario.id).order_by(Usuario.nombre.desc()))
+
+            for consumo_item in consumo_semanal:
+                arreglo_consumo[str(consumo_item.usuario.nombre)] = consumo_item.total
+            
             args = {}
             args['consumos'] = arreglo_consumo
             args['auth'] = admin
