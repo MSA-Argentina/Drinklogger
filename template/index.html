@@ -35,7 +35,7 @@
                         </li>
                         <li id="persona">
                             Usuario: <select id="personas" name="personas" onchange="enable(this)">
-                                <option value="0">------------</option>
+                                <option value="0" selected="selected">------------</option>
                                 {% for usuario in args['usuarios'] %}
                                     <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
                                 {% endfor %}
@@ -48,10 +48,7 @@
                         <div id="add_err" stye="display:none">
                         </div>
                         <li>
-                            <input class="uk-button uk-button-primary uk-button-large" id="checklogin" type="button" value="Enviar Pedido" >
-                        </li>
-
-                        <li>
+                            <input class="uk-button uk-button-primary uk-button-large" id="checklogin" type="button" value="Enviar Pedido">
                             <a class="uk-button uk-button-success uk-button-large" href="#" onClick="aStock();">Volver Atrás</a>
                         </li>
                     </ul>

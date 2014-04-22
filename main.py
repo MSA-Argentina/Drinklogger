@@ -2,8 +2,8 @@
 # Imports
 import datetime
 import logging
-from hashlib import md5
 from config import app
+from config import DEBUG
 from config import db
 from config import api
 from config import auth
@@ -16,9 +16,12 @@ from flask import redirect
 from flask import url_for
 from flask import jsonify
 
-logging.basicConfig(filename='drinklogger.log', level=logging.INFO)
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+# Si el modo de debugging está desactivado
+# Loguea transacciones y errores sin levantarlos en la aplicación web
+if DEBUG == False:
+    logging.basicConfig(filename='drinklogger.log', level=logging.INFO)
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
 
 # Esto crea las vistas del admin tipo django
 admin.setup()
@@ -67,7 +70,7 @@ def checklogin():
     get_usuario = Usuario.get(Usuario.id == request.args.get('personas')).nombre
     get_pass = Usuario.get(Usuario.id == request.args.get('personas')).password
 
-    if (get_pass == md5(request.args.get('pass').encode('utf-8')).hexdigest()):
+    if (get_pass == request.args.get('pass').encode('utf-8')):
         if (request.args.get('productos') != "null"):
             cantidad_actual = Producto.get(Producto.id == request.args.get('productos')).cant
             if((cantidad_actual > 0) and (int(request.args.get('cantidad')) <= cantidad_actual)):
@@ -187,7 +190,7 @@ def cierre_consumos(pasado, futuro):
                                          futuro,
                                          datetime.datetime.now()))
 
-        return redirect('/?exito=True')
+        return redirect('/')
 
 
 @app.route("/usuario/")

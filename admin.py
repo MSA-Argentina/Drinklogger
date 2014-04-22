@@ -1,4 +1,3 @@
-from hashlib import md5
 from config import app
 from config import db
 from config import auth
