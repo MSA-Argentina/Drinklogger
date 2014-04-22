@@ -6,7 +6,7 @@ function mostrarPedidos() {
     $('#password').val('');
     $('#personas').val('');
     $('#add_err').removeClass('uk-alert-warning uk-alert uk-alert-success');
-    $('#add_err').html(''); 
+    $('#add_err').html('');
 
     cargar_bebidas();
 }
@@ -36,8 +36,8 @@ function admSelectCheck(nameSelect) {
             firstCheck = true;
         } else {
             cantidad.style.display = "none";
-            $("#persona").show();
-            $("#pass").show();
+            $("#persona").hide();
+            $("#pass").hide();
             document.getElementById("personas").selectedIndex = 0;
             document.getElementById("personas").value = 0;
             document.getElementById("password").value = "";
@@ -145,40 +145,43 @@ function cargar_bebidas() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    get_bebidas();
-    var refrescar_stock = setInterval(function() {
-        refrescar_bebidas()
-    }, 30000);
-    var refrescar_pedido = setInterval(function() {
-        cargar_bebidas()
-    }, 300000);
+    if (window.location.pathname == '/') {
+        get_bebidas();
+        var refrescar_stock = setInterval(function() {
+            refrescar_bebidas()
+        }, 30000);
+        var refrescar_pedido = setInterval(function() {
+            cargar_bebidas()
+        }, 300000);
+    };
 });
 
-$(document).ready(function(){
-    $("#checklogin").click(function(){
+$(document).ready(function() {
+    $("#checklogin").click(function() {
         personas = $("#personas").val();
         pass = $("#password").val();
+        pass = $.md5(pass);
         producto = $("#productos").val();
         cant = $("#cantidad").val();
-        if(pass != '' && personas > 0 && producto > 0){
+        if (pass != '' && personas > 0 && producto > 0) {
             $.ajax({
                 type: "POST",
-                encoding:"UTF-8",
-                url: "checklogin?"+"personas="+personas+"&pass="+encodeURIComponent(pass)+"&productos="+producto+"&cantidad="+cant,
-                success: function(html){   
+                encoding: "UTF-8",
+                url: "checklogin?" + "personas=" + personas + "&pass=" + encodeURIComponent(pass) + "&productos=" + producto + "&cantidad=" + cant,
+                success: function(html) {
                     //alert(JSON.stringify(html));
-                    var obj = jQuery.parseJSON( JSON.stringify(html) );
+                    var obj = jQuery.parseJSON(JSON.stringify(html));
                     $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
                     $('#add_err').html(obj.MSG);
                     $('#password').val('');
                 },
-                beforeSend:function(){
+                beforeSend: function() {
                     $("#add_err").html("Cargando Datos...");
                 }
             });
-        }else{
+        } else {
             $('#add_err').html('Completar todos los campos para realizar el pedido');
-            $('#add_err').addClass( 'uk-alert uk-alert-warning' );
+            $('#add_err').addClass('uk-alert uk-alert-warning');
         }
         return false;
     });
