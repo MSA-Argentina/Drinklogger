@@ -7,7 +7,7 @@
 
             <ul class="uk-list uk-list-space uk-list-line">
                 {% for detalle in args['detalles'] %}
-                    <li><b>{{ detalle.fecha }}</b> - {{ detalle.producto }} x{{ detalle.cantidad }} (${{ detalle.precio }})</li>
+                    <li><b>{{ detalle.fecha.strftime('%d/%m/%y') }}</b> - {{ detalle.producto }} x{{ detalle.cantidad }} (${{ detalle.precio }})</li>
                 {% endfor %}
             </ul>
 
