@@ -60,9 +60,9 @@ function cambioFecha(nameSelect) {
 function enable(nameSelect) {
     admOptionValue = nameSelect.value;
     if ((admOptionValue != 0) && (firstCheck == true)) {
-        $("#checklogin").show();
+        $("#checklogin").prop('disabled', false);
     } else {
-        $("#checklogin").hide();
+        $("#checklogin").prop('disabled', true);
     };
 }
 
