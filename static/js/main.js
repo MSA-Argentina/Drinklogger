@@ -87,12 +87,18 @@ function get_bebidas() {
                 ul.appendChild(nuevo_item);
             }
         } else {
-            return console.log('Error de conexión');
+            setTimeout(function() {
+                get_bebidas();
+            }, 2000);
+            return console.log('Error de conexión. Reintentando...');
         }
     };
 
     request.onerror = function() {
-        return alert('Error de solicitud');
+        setTimeout(function() {
+            get_bebidas();
+        }, 2000);
+        return console.log('Error de conexión. Reintentando...');
     };
 
     request.send();
@@ -138,7 +144,10 @@ function cargar_bebidas() {
     };
 
     request.onerror = function() {
-        return alert('Error');
+        setTimeout(function() {
+            cargar_bebidas();
+        }, 2000);
+        return console.log('Error de conexión. Reintentando...');
     };
 
     request.send();
