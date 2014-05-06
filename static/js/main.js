@@ -4,7 +4,7 @@ function mostrarPedidos() {
     consulta.style.display = "none";
     $("#checklogin").hide();
     $('#password').val('');
-    $('#personas').val('');
+    $('#personas option[value="0"]').prop('selected', true);
     $('#add_err').removeClass('uk-alert-warning uk-alert uk-alert-success');
     $('#add_err').html('');
 
@@ -240,6 +240,9 @@ $(document).ready(function() {
                     $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
                     $('#add_err').html(obj.MSG);
                     $('#password').val('');
+                    $('#productos').empty();
+                    cargar_bebidas();
+                    $('#personas option[value="0"]').prop('selected', true);
                 },
                 beforeSend: function() {
                     $("#add_err").html("Cargando Datos...");
