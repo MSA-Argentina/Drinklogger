@@ -153,6 +153,63 @@ function cargar_bebidas() {
     request.send();
 }
 
+function get_Detalle(usuario, pasado, futuro) {
+
+    var consulta_usuario = 'consulta-'.concat(usuario.replace(/\s/g, '-'));
+    var detalle = document.getElementById(consulta_usuario);
+    var cerrar_detalle = document.getElementById('cerrar-consulta-'.concat(usuario.replace(/\s/g, '-')));
+    detalle.style.display = 'none';
+    cerrar_detalle.style.display = 'inline-block';
+
+    var url = '/consulta/'.concat(usuario).concat('/');
+    var url = url.concat(pasado).concat('-a-');
+    var url = url.concat(futuro).concat('/');
+
+    request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            data = JSON.parse(request.responseText);
+            var td_usuario = 'usuario-'.concat(usuario.replace(/\s/g, '-'));
+            detalle = document.getElementById(td_usuario).children[0];
+            var lista_detalle = document.createElement('ul');
+            detalle.innerHTML = '';
+            lista_detalle.innerHTML = '';
+            for (var i = data["cantidad"].length - 1; i >= 0; i--) {
+                var detalle_elemento = document.createElement('li');
+                detalle_elemento.innerHTML = ''.concat(data["fecha"][i]).concat(' - ').concat(data["producto"][i]).concat(' x').concat(data["cantidad"][i]).concat('($').concat(data["precio"][i]).concat(')');
+                lista_detalle.appendChild(detalle_elemento);
+            };
+            detalle.appendChild(lista_detalle);
+
+        } else {
+            return console.log('Error');
+        }
+    };
+
+    request.onerror = function() {
+        setTimeout(function() {
+            get_Detalle();
+        }, 2000);
+        return console.log('Error de conexión. Reintentando...');
+    };
+
+    request.send();
+}
+
+function cerrar_Detalle(padre) {
+    var padre = document.getElementById(padre);
+    var padre_id = padre.id.replace('usuario-', '');
+    padre_link = document.getElementById('cerrar-consulta-'.concat(padre_id));
+    var padre_detalle_link = document.getElementById('consulta-'.concat(padre_id));
+    padre_link.style.display = 'none';
+    padre_detalle_link.style.display = 'inline-block';
+    hijo = padre.children[0];
+    hijo.innerHTML = '';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname == '/') {
         get_bebidas();

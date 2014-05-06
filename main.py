@@ -109,13 +109,13 @@ def checklogin():
         logging.warning('Error de contraseña: Usuario: %s' % (get_usuario.encode('utf-8')))
 
 
-    ret_data = {"productos": request.args.get('productos'), 
+    ret_data = {"productos": request.args.get('productos'),
                 "cantidad":request.args.get('cantidad'),
                 "MSG":msg,
                 "MSGUK":msg_uk
                 }
 
-    return jsonify(ret_data);
+    return jsonify(ret_data)
 
 @app.route("/consulta/", methods=["POST"])
 def consulta():
@@ -142,7 +142,6 @@ def consulta():
 
             for consumo_item in consumo_semanal:
                 arreglo_consumo[str(consumo_item.usuario.nombre)] = consumo_item.total
-            
             args = {}
             args['consumos'] = arreglo_consumo
             args['auth'] = admin
@@ -165,10 +164,14 @@ def consulta_detalle(usuario, pasado, futuro):
                                         & (Consumo.fecha <= futuro)
                                         & (Consumo.activo == True))\
                                  .order_by(Consumo.fecha.asc())
-        args = {}
-        args['usuario'] = usuario
-        args['detalles'] = usuario_detalle
-        return render_template("detalle.html", args=args,)
+
+        prueba_json = {"usuario": usuario,
+                "producto": [u.producto.nombre for u in usuario_detalle],
+                "cantidad": [u.cantidad for u in usuario_detalle],
+                "precio": [u.producto.precio for u in usuario_detalle],
+                "fecha": [u.fecha.strftime('%d/%m/%Y') for u in usuario_detalle]}
+
+        return jsonify(prueba_json)
     else:
         abort(406)
 

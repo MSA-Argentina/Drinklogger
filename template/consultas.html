@@ -15,9 +15,15 @@
                     <tbody>
                         {% for usuario, total in args['consumos'].items() %}
                             <tr>
-                                <td>{{ usuario }}</td>
+                                <td id="usuario-{{ usuario.replace(' ', '-') }}">
+                                    {{ usuario }}
+                                    <div id="detalle" style="padding-top:10px;"></div>
+                                </td>
                                 <td>${{ total }}</td>
-                                <td><a class="uk-button uk-button-danger" href="/consulta/{{ usuario }}/{{ args['pasado'] }}-a-{{ args['futuro'] }}/">Detalle</td>
+                                <td>
+                                    <a id="consulta-{{ usuario.replace(' ', '-') }}" class="uk-button uk-button-danger" href="javascript:get_Detalle('{{ usuario }}', '{{ args['pasado'] }}', '{{ args['futuro'] }}');">Detalle</a>
+                                    <a id="cerrar-consulta-{{ usuario.replace(' ', '-') }}" class="uk-button uk-button-primary" style="display:none;" href="javascript:cerrar_Detalle('usuario-{{ usuario.replace(' ', '-') }}');">Cerrar Detalle</a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
