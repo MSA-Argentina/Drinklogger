@@ -165,13 +165,13 @@ def consulta_detalle(usuario, pasado, futuro):
                                         & (Consumo.activo == True))\
                                  .order_by(Consumo.fecha.asc())
 
-        prueba_json = {"usuario": usuario,
+        consulta_json = {"usuario": usuario,
                 "producto": [u.producto.nombre for u in usuario_detalle],
                 "cantidad": [u.cantidad for u in usuario_detalle],
                 "precio": [u.producto.precio for u in usuario_detalle],
                 "fecha": [u.fecha.strftime('%d/%m/%Y') for u in usuario_detalle]}
 
-        return jsonify(prueba_json)
+        return jsonify(consulta_json)
     else:
         abort(406)
 
