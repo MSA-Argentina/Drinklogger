@@ -17,22 +17,31 @@ Instalación
 
 Clonar el repositorio
 
-    git clone https://github.com/MSA-Argentina/Drinklogger.git
+```bash
+git clone https://github.com/MSA-Argentina/Drinklogger.git
+```
 
 Crear un entorno virtual con **virtualenvwrapper**
 
-    mkvirtualenv drinklogger
+```bash
+mkvirtualenv drinklogger
+```
 
 O tan sólo **virtualenv**.
 
-    virtualenv drinklogger
+```bash
+virtualenv drinklogger
+```
 
 Luego, ejecutar el archivo _requeriments.txt_ con **pip**.
 
-    pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
+```
 
 Después, si no hubo errores en la instalación de los requerimientos, editar el archivo _config.py_ en las siguientes líneas:
 
+```python
     # Configuracion
     DATABASE = {
         'name': '',
@@ -40,15 +49,17 @@ Después, si no hubo errores en la instalación de los requerimientos, editar el
         'user': '',
         'pass': '',
     }
-
     DEBUG = False # Activar fuera del repo
     SECRET_KEY = '' # Agregar fuera del repo
+```
 
 Agregando el nombre de la base de datos, el motor (Por default usamos **PostgreSQL**), el usuario, la contraseña de la base de datos y agregar un valor a *SECRET_KEY*. Si se está probando, es recomendable cambiar _DEBUG_ de **False** a **True**.
 
 Y finalmente, ejecutar el archivo *main.py*.
 
-    python main.py
+```bash
+python main.py
+```
 
 F.A.Q.
 ------
@@ -59,7 +70,9 @@ Estos son posibles errores que puede haber en la instalación.
 
 En **Linux**, instalar _python-dev_ y _postgresql-server-dev-9.3_ para que psycopg2 pueda compilar.
 
-    sudo apt-get install python-dev postgresql-server-dev-9.3
+```bash
+sudo apt-get install python-dev postgresql-server-dev-9.3
+```
 
 En **Windows** usar [el instalador gráfico](http://stickpeople.com/projects/python/win-psycopg/).
 
@@ -69,13 +82,15 @@ Sí, ambos son soportados. Pero en vez de **psycopg2** tiene que instalar **pysq
 
 ### ¿Cómo creo un usuario para la administración?
 
-Para crear un usuario **admin** default necesitan correr este código python desde la línea de comando o mismo desde el _____main_____
+Para crear un usuario **admin** default necesitan correr este código python desde la línea de comando o mismo desde el `__main__`
 
+```python
     from config import auth
     auth.User.create_table(fail_silently=True)  # make sure table created.
     admin = auth.User(username='admin', email='', admin=True, active=True)
     admin.set_password('admin')
     admin.save()
+```
 
 Una vez corrido, pueden entrar como usuario **admin** y password **admin**. Es recomendable cambiar esto.
 
