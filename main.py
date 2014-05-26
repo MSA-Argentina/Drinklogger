@@ -89,6 +89,7 @@ def checklogin():
                     .where(Producto.id == request.args.get('productos'))
                 actualizar_cantidad.execute()
 
+                estado = 200
                 msg = 'Ya podés disfrutar tu bebida'
                 msg_uk = 'uk-alert uk-alert-success'
                 logging.info('Compra exitosa: Usuario: %s - Producto: %s - Cantidad: %s - Fecha: %s' % (get_usuario,
@@ -96,14 +97,17 @@ def checklogin():
                                              request.args.get('cantidad'),
                                              datetime.datetime.now()))
             else:
+                estado = 400
                 msg = 'No hay productos en stock, intente con otro :)'
                 msg_uk = 'uk-alert uk-alert-warning'
                 logging.warning('Error de cantidad: Usuario %s' % (get_usuario.encode('utf-8')))
         else:
+            estado = 400
             msg = 'Error de Stock, selecione otro producto'
             msg_uk = 'uk-alert uk-alert-warning'
             logging.warning('Error de stock: Usuario %s' % (get_usuario.encode('utf-8')))
     else:
+        estado = 400
         msg = 'Contraseña incorrecta. Intente de nuevo'
         msg_uk = 'uk-alert uk-alert-warning'
         logging.warning('Error de contraseña: Usuario: %s' % (get_usuario.encode('utf-8')))
@@ -112,7 +116,8 @@ def checklogin():
     ret_data = {"productos": request.args.get('productos'),
                 "cantidad":request.args.get('cantidad'),
                 "MSG":msg,
-                "MSGUK":msg_uk
+                "MSGUK":msg_uk,
+                "estado":estado
                 }
 
     return jsonify(ret_data)

@@ -239,10 +239,16 @@ $(document).ready(function() {
                     var obj = jQuery.parseJSON(JSON.stringify(html));
                     $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
                     $('#add_err').html(obj.MSG);
+                    console.log(obj);
                     $('#password').val('');
                     $('#productos').empty();
                     cargar_bebidas();
                     $('#personas option[value="0"]').prop('selected', true);
+                    $('#add_err').fadeOut(5000);
+                    if (obj.estado == 200) {
+                        $('#inventory').fadeOut(5000);
+                        $('#main').fadeIn(5000);
+                    }
                 },
                 beforeSend: function() {
                     $("#add_err").html("Cargando Datos...");
@@ -251,6 +257,7 @@ $(document).ready(function() {
         } else {
             $('#add_err').html('Completar todos los campos para realizar el pedido');
             $('#add_err').addClass('uk-alert uk-alert-warning');
+            $('#add_err').hide().fadeIn().delay(3000).fadeOut('slow');
         }
         return false;
     });
