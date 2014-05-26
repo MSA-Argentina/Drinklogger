@@ -239,7 +239,6 @@ $(document).ready(function() {
                     var obj = jQuery.parseJSON(JSON.stringify(html));
                     $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
                     $('#add_err').html(obj.MSG);
-                    console.log(obj);
                     $('#password').val('');
                     $('#productos').empty();
                     cargar_bebidas();
