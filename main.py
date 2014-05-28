@@ -2,11 +2,14 @@
 # Imports
 import datetime
 import logging
+import time
+from md5 import md5
 from config import app
 from config import DEBUG
 from config import db
 from config import api
 from config import auth
+from config import mail
 from database import *
 from admin import admin
 from flask import abort
@@ -15,6 +18,7 @@ from flask import request
 from flask import redirect
 from flask import url_for
 from flask import jsonify
+from flask.ext.sendmail import Message
 
 # Si el modo de debugging está desactivado
 # Loguea transacciones y errores sin levantarlos en la aplicación web
@@ -108,7 +112,8 @@ def checklogin():
             logging.warning('Error de stock: Usuario %s' % (get_usuario.encode('utf-8')))
     else:
         estado = 400
-        msg = 'Contraseña incorrecta. Intente de nuevo'
+        msg = u'Contraseña incorrecta. Intente de nuevo o <a href="/usuario/recuperar/%s/">Recupere su contraseña</a>' \
+                % request.args.get('personas')
         msg_uk = 'uk-alert uk-alert-warning'
         logging.warning('Error de contraseña: Usuario: %s' % (get_usuario.encode('utf-8')))
 
@@ -273,6 +278,25 @@ def elimino_usuario(usuario_id):
                                          usuario_id.encode('utf-8'),
                                          datetime.datetime.now()))
         return redirect(url_for("manejo_usuario"))
+
+
+@app.route("/usuario/recuperar/<usuario_id>/")
+def recuperar_pass(usuario_id):
+    if (usuario_id != "" and usuario_id.isdigit()):
+        usuario_email = Usuario.get(Usuario.id == usuario_id).email
+        nuevo_pass = str(time.time())[0:5]
+        usuario_recuperado = Usuario.update(password=md5(nuevo_pass).hexdigest())\
+                                    .where(Usuario.id == usuario_id)
+        usuario_recuperado.execute()
+        confirmacion = Message("Recuperar Contraseña",
+                                sender=("Sistema", "no-reply@bebidas.msa"),
+                                recipients=[usuario_email])
+        confirmacion.body = "Su nueva contraseña es: %s" % nuevo_pass
+        mail.send(confirmacion)
+
+        return redirect(url_for("home"))
+    else:
+        abort(406)
 
 
 # Principal
