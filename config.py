@@ -3,6 +3,7 @@ from flask import Flask
 from flask_peewee.db import Database
 from flask_peewee.auth import Auth
 from flask_peewee.rest import RestAPI
+from flask.ext.sendmail import Mail
 
 # Configuracion
 DATABASE = {
@@ -23,3 +24,4 @@ app.config.from_object(__name__)
 db = Database(app)
 auth = Auth(app, db)
 api = RestAPI(app)
+mail = Mail(app)
