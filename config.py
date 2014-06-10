@@ -6,7 +6,7 @@ import os
 DATABASE = {
     'name': 'drinklogger',
     'engine': 'peewee.PostgresqlDatabase',
-    'user': 'felipe',
+    'user': '',
     'password': '',
 }
 
