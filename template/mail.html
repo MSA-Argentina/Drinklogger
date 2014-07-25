@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Reporte</title>
+<!-- TODO: Darle un toque de estilo -->
+</head>
+<body>
+<h3>Consumo semanal de {{ pasado }} a {{ presente }} </h3>
+<table>
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ dato['usuario'] }}</td>
+            <td>${{ dato['total'] }}</td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
