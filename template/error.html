@@ -18,6 +18,6 @@
                 <p>Error desconocido, intente luego.</p>
             {% endif %}
 
-            <a class="uk-button uk-button-primary uk-button-large" href="javascript:history.go(-1);">Volver atrás</a>
+            <a class="uk-button uk-button-primary uk-button-large" href="{{ url_for('home') }}">Volver atrás</a>
         </div>
     {% endblock %}

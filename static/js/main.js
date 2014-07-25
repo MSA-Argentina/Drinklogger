@@ -153,6 +153,45 @@ function cargar_bebidas() {
     request.send();
 }
 
+function hacer_compra() {
+    personas = $("#personas").val();
+    pass = $("#password").val();
+    pass = $.md5(pass);
+    producto = $("#productos").val();
+    cant = $("#cantidad").val();
+    if (pass != '' && personas > 0 && producto > 0) {
+        $.ajax({
+            type: "POST",
+            encoding: "UTF-8",
+            url: "checklogin?" + "personas=" + personas + "&pass=" + encodeURIComponent(pass) + "&productos=" + producto + "&cantidad=" + cant,
+            success: function(html) {
+                //alert(JSON.stringify(html));
+                var obj = jQuery.parseJSON(JSON.stringify(html));
+                $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
+                $('#add_err').html(obj.MSG);
+                console.log(obj);
+                $('#password').val('');
+                $('#productos').empty();
+                cargar_bebidas();
+                $('#personas option[value="0"]').prop('selected', true);
+                if (obj.estado == 200) {
+                    $('#add_err').fadeOut(5000);
+                    $('#inventory').hide();
+                    $('#main').fadeIn(2000);
+                }
+            },
+            beforeSend: function() {
+                $("#add_err").html("Cargando Datos...");
+            }
+        });
+    } else {
+        $('#add_err').html('Completar todos los campos para realizar el pedido');
+        $('#add_err').addClass('uk-alert uk-alert-warning');
+        $('#add_err').hide().fadeIn().delay(3000).fadeOut('slow');
+    }
+    return false;
+}
+
 function get_Detalle(usuario, pasado, futuro) {
 
     var consulta_usuario = 'consulta-'.concat(usuario.replace(/\s/g, '-'));
@@ -222,43 +261,18 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
+$(document).on("keypress", 'form', function (e) {
+    if (e.target.className.indexOf("allowEnter") == -1) {
+        var code = e.keyCode || e.which;
+        if (code == 13) {
+            e.preventDefault();
+            hacer_compra();
+        }
+    }
+});
+
 $(document).ready(function() {
     $("#checklogin").click(function() {
-        personas = $("#personas").val();
-        pass = $("#password").val();
-        pass = $.md5(pass);
-        producto = $("#productos").val();
-        cant = $("#cantidad").val();
-        if (pass != '' && personas > 0 && producto > 0) {
-            $.ajax({
-                type: "POST",
-                encoding: "UTF-8",
-                url: "checklogin?" + "personas=" + personas + "&pass=" + encodeURIComponent(pass) + "&productos=" + producto + "&cantidad=" + cant,
-                success: function(html) {
-                    //alert(JSON.stringify(html));
-                    var obj = jQuery.parseJSON(JSON.stringify(html));
-                    $('#add_err').removeClass('uk-alert-warning').addClass(obj.MSGUK);
-                    $('#add_err').html(obj.MSG);
-                    console.log(obj);
-                    $('#password').val('');
-                    $('#productos').empty();
-                    cargar_bebidas();
-                    $('#personas option[value="0"]').prop('selected', true);
-                    if (obj.estado == 200) {
-                        $('#add_err').fadeOut(5000);
-                        $('#inventory').hide();
-                        $('#main').fadeIn(2000);
-                    }
-                },
-                beforeSend: function() {
-                    $("#add_err").html("Cargando Datos...");
-                }
-            });
-        } else {
-            $('#add_err').html('Completar todos los campos para realizar el pedido');
-            $('#add_err').addClass('uk-alert uk-alert-warning');
-            $('#add_err').hide().fadeIn().delay(3000).fadeOut('slow');
-        }
-        return false;
+        hacer_compra();
     });
 });
