@@ -25,5 +25,4 @@ class ProductoResource(RestResource):
 admin = Admin(app, auth, branding="Drinklogger")
 admin.register(Producto, ProductoAdmin)
 admin.register(Consumo, ConsumoAdmin)
-
 api.register(Producto, ProductoResource)

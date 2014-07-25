@@ -4,7 +4,6 @@ from peewee import CharField, FloatField, TextField, IntegerField, \
 
 from application import db
 
-
 class Producto(db.Model):
     nombre = CharField()
     precio = FloatField()

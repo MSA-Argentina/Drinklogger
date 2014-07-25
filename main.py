@@ -3,26 +3,34 @@
 import datetime
 import logging
 import time
-
 from md5 import md5
-
-from flask import abort, render_template, request, redirect, url_for, jsonify
-from flask.ext.sendmail import Message
-from peewee import fn
-
-from admin import admin
-from application import app, auth, mail, api
-from config import DEBUG, LOG_LEVEL, LOG_NAME
+from config import app
+from config import DEBUG
+from config import db
+from config import api
+from config import auth
+from config import mail
 from database import *
-
+from admin import admin
+from flask import abort
+from flask import render_template
+from flask import request
+from flask import redirect
+from flask import url_for
+from flask import jsonify
+from flask.ext.sendmail import Message
 
 # Si el modo de debugging está desactivado
 # Loguea transacciones y errores sin levantarlos en la aplicación web
-if not DEBUG:
-    logging.basicConfig(filename=LOG_NAME, level=LOG_LEVEL)
+if DEBUG == False:
+    logging.basicConfig(filename='drinklogger.log', level=logging.INFO)
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
 
+# Esto crea las vistas del admin tipo django
+admin.setup()
+# Y esto el API REST para el log de bebidas
+api.setup()
 
 # Errores genéricos
 @app.errorhandler(404)
@@ -37,7 +45,6 @@ def pagErrorValores(error):
     args = {}
     args['error'] = error.code
     return render_template("error.html", args=args,)
-
 
 @app.route("/", methods=["GET"])
 def home(exito=None, error=None):
@@ -57,7 +64,10 @@ def home(exito=None, error=None):
 
 @app.route("/checklogin", methods=["POST", "GET"])
 def checklogin():
+    usuarios = Usuario.select()
     consumo = Consumo.select()
+    productos = Producto.select()
+    admin = auth.get_logged_in_user()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
 
@@ -116,7 +126,6 @@ def checklogin():
                 }
 
     return jsonify(ret_data)
-
 
 @app.route("/consulta/", methods=["POST"])
 def consulta():
@@ -180,6 +189,8 @@ def consulta_detalle(usuario, pasado, futuro):
 @app.route("/consulta/cierre/<pasado>-a-<futuro>/", methods=["GET"])
 def cierre_consumos(pasado, futuro):
     if (pasado != "" and futuro != ""):
+        productos = Producto.select()
+        usuarios = Usuario.select()
         semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
         semana_pasada = semana_pasada.date()
 
@@ -198,6 +209,7 @@ def cierre_consumos(pasado, futuro):
 @app.route("/usuario/")
 @auth.login_required
 def manejo_usuario():
+    user = auth.get_logged_in_user()
     usuarios = Usuario.select().order_by(Usuario.id.asc())
     return render_template("usuarios.html", usuarios=usuarios)
 
@@ -209,6 +221,7 @@ def crear_usuario():
         and request.form["pass"] != ""):
         try:
             Usuario.get(Usuario.email == request.form["email"])
+            return redirect(url_for("manejo_usuario"))
         except Usuario.DoesNotExist:
             Usuario.create(
                 nombre=request.form["nombre"],
@@ -220,7 +233,7 @@ def crear_usuario():
                                              request.form['nombre']\
                                              .encode('utf-8'),
                                              datetime.datetime.now()))
-    return redirect(url_for("manejo_usuario"))
+            return redirect(url_for("manejo_usuario"))
 
 
 @app.route("/usuario/editar/<id_usuario>/", methods=["GET"])
@@ -231,10 +244,10 @@ def editar_usuario(id_usuario):
     else:
         abort(406)
 
-
 @app.route("/usuario/editado/", methods=["POST"])
 def edito_usuario():
     if request.method == "POST":
+        datos_usuario = Usuario.get(Usuario.id == request.form["usuario_id"])
         if request.form["pass"] == "":
             act_usuario = Usuario.update(nombre=request.form["nombre"],
                                    email=request.form["email"],)\
@@ -290,7 +303,7 @@ def recuperar_pass(usuario_id):
 if __name__ == "__main__":
     # Crea las tablas pero no avisa si falló
     # Conviene borrar una vez hecha la primera pasada
-
-    admin.setup()
-    api.setup()
+    Usuario.create_table(fail_silently=True)
+    Producto.create_table(fail_silently=True)
+    Consumo.create_table(fail_silently=True)
     app.run()
