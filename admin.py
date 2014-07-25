@@ -1,14 +1,8 @@
-from config import app
-from config import db
-from config import auth
-from config import api
-from database import *
-from flask import request
-from flask import redirect
-from flask_peewee.admin import Admin
-from flask_peewee.admin import AdminPanel
-from flask_peewee.admin import ModelAdmin
+from flask_peewee.admin import Admin, ModelAdmin
 from flask_peewee.rest import RestResource
+
+from application import app, auth, api
+from database import Producto, Consumo
 
 
 class ProductoAdmin(ModelAdmin):

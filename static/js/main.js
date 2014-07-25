@@ -244,10 +244,10 @@ $(document).ready(function() {
                     $('#productos').empty();
                     cargar_bebidas();
                     $('#personas option[value="0"]').prop('selected', true);
-                    $('#add_err').fadeOut(5000);
                     if (obj.estado == 200) {
-                        $('#inventory').fadeOut(5000);
-                        $('#main').fadeIn(5000);
+                        $('#add_err').fadeOut(5000);
+                        $('#inventory').hide();
+                        $('#main').fadeIn(2000);
                     }
                 },
                 beforeSend: function() {

@@ -7,4 +7,5 @@ peewee
 psycopg2
 six
 wsgiref
-jsonify
+#jsonify
+Flask-sendmail

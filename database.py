@@ -1,7 +1,8 @@
 import datetime
-from config import app
-from config import db
-from peewee import *
+from peewee import CharField, FloatField, TextField, IntegerField, \
+    ForeignKeyField, DateField, BooleanField
+
+from application import db
 
 
 class Producto(db.Model):
