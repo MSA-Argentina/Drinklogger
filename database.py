@@ -2,8 +2,7 @@ import datetime
 from peewee import CharField, FloatField, TextField, IntegerField, \
     ForeignKeyField, DateField, BooleanField
 
-from application import db
-
+from config import db
 
 class Producto(db.Model):
     nombre = CharField()
