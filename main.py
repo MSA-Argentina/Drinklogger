@@ -4,9 +4,9 @@ import datetime
 import logging
 import time
 from md5 import md5
+from peewee import fn
 from config import app
 from config import DEBUG
-from config import db
 from config import api
 from config import auth
 from config import mail
@@ -64,10 +64,6 @@ def home(exito=None, error=None):
 
 @app.route("/checklogin", methods=["POST", "GET"])
 def checklogin():
-    usuarios = Usuario.select()
-    consumo = Consumo.select()
-    productos = Producto.select()
-    admin = auth.get_logged_in_user()
     semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
     semana_pasada = semana_pasada.date()
 
@@ -189,8 +185,6 @@ def consulta_detalle(usuario, pasado, futuro):
 @app.route("/consulta/cierre/<pasado>-a-<futuro>/", methods=["GET"])
 def cierre_consumos(pasado, futuro):
     if (pasado != "" and futuro != ""):
-        productos = Producto.select()
-        usuarios = Usuario.select()
         semana_pasada = datetime.datetime.now() - datetime.timedelta(7)
         semana_pasada = semana_pasada.date()
 

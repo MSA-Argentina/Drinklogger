@@ -1,7 +1,7 @@
 from flask_peewee.admin import Admin, ModelAdmin
 from flask_peewee.rest import RestResource
 
-from application import app, auth, api
+from config import app, auth, api
 from database import Producto, Consumo
 
 
