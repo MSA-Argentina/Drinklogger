@@ -10,13 +10,13 @@ from flask.ext.sendmail import Mail
 DATABASE = {
     'name': 'drinklogger',
     'engine': 'peewee.PostgresqlDatabase',
-    'user': 'leandro',
+    'user': '',
     'password': '',
 }
 
 DEBUG = True # Activar fuera del repo
 LOG_LEVEL = logging.DEBUG
-SECRET_KEY = 'agfsdbdgbgfc' # Agregar fuera del repo
+SECRET_KEY = '' # Agregar fuera del repo
 LOG_NAME = "drinklogger.log"
 
 # Evita errores al traer templates en distintos ambientes
